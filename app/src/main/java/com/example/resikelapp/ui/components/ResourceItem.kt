@@ -10,6 +10,8 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.resikelapp.R
@@ -20,16 +22,21 @@ fun ResourceItem(
     value: String,
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(5.dp)
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             painter = painterResource(imageId),
             contentDescription = "coin icon"
         )
-        Text(value)
+        Text(
+            value,
+            color = Color.White
+        )
         Icon(
             Icons.AutoMirrored.Outlined.ArrowForwardIos,
-            contentDescription = "Show Detail"
+            contentDescription = "Show Detail",
+            tint = Color.White
         )
     }
 }
