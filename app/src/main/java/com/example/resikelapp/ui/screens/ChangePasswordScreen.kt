@@ -17,6 +17,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.resikelapp.R
@@ -140,4 +141,10 @@ fun ChangePasswordScreen(
             Text(text = "Ganti Password", color = Color.White)
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewChangePasswordScreen() {
+    ChangePasswordScreen(onChangePassword = { _, _ -> })
 }

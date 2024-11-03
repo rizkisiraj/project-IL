@@ -1,13 +1,10 @@
 package com.example.resikelapp.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -17,7 +14,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import com.example.resikelapp.R
+import androidx.compose.ui.tooling.preview.Preview // Add this import
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,11 +66,7 @@ fun OtpDialog(
                                 textAlign = TextAlign.Center,
                             ),
                             textAlign = TextAlign.Center
-
                         )
-                        Modifier
-                            .width(240.dp)
-                            .height(32.dp)
 
                         // OTP Input Field
                         OutlinedTextField(
@@ -82,6 +75,7 @@ fun OtpDialog(
                             placeholder = {
                                 Text(
                                     text = "xxxx - xxxx",
+                                    textAlign = TextAlign.Center,
                                     style = TextStyle(
                                         fontSize = 22.sp,
                                         lineHeight = 28.sp,
@@ -113,8 +107,6 @@ fun OtpDialog(
                         // Instruction Text
                         Text(
                             text = "Kami sudah mengirimkan kode OTP, silahkan periksa Email Anda",
-
-                            // material-theme/label/small
                             style = TextStyle(
                                 fontSize = 11.sp,
                                 lineHeight = 16.sp,
@@ -142,12 +134,21 @@ fun OtpDialog(
                         painter = painterResource(id = R.drawable.ic_lock),
                         contentDescription = "Lock Icon",
                         tint = Color(0xFF3C8161),
-                        modifier = Modifier.size(32.dp) // Ukuran ikon di dalam lingkaran
+                        modifier = Modifier.size(32.dp)
                     )
                 }
             }
         },
         confirmButton = {},
         dismissButton = {}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewOtpDialog() {
+    OtpDialog(
+        onDismiss = { /* Handle dismiss action */ },
+        onSubmitOtp = { otp -> /* Handle OTP submission */ }
     )
 }

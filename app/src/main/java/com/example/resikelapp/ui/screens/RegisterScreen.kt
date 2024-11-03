@@ -74,7 +74,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        //label Password
+        // Label Password
         Text(
             text = "Password",
             style = MaterialTheme.typography.bodyMedium.copy(
@@ -87,6 +87,7 @@ fun RegisterScreen(
                 .align(Alignment.Start)
                 .padding(start = 8.dp, bottom = 4.dp)
         )
+
         // Input Password
         Box(
             modifier = Modifier
@@ -137,9 +138,8 @@ fun RegisterScreen(
                 style = TextStyle(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
+                )
             )
-            )
-
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -256,4 +256,13 @@ fun InputField(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewRegisterScreen() {
+    RegisterScreen(
+        onRegister = { firstName, lastName, email, password -> /* Handle register action */ },
+        onNavigateToLogin = { /* Handle navigation to login */ }
+    )
 }

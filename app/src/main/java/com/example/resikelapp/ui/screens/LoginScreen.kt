@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.resikelapp.ui.components.OtpDialog
@@ -146,17 +147,15 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        //Tampil OTP
+        // Tampil OTP
         if (showOtpDialog) {
             OtpDialog(
                 onDismiss = { showOtpDialog = false },
                 onSubmitOtp = { otpCode ->
                     showOtpDialog = false
-                    // Implementasi Kode OTP
                 }
             )
         }
-
 
         // Link Lupa Password
         Text(
@@ -219,7 +218,6 @@ fun LoginScreen(
         // Atau
         Text(
             text = "Atau",
-
             style = TextStyle(
                 fontSize = 12.sp,
                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
@@ -262,4 +260,15 @@ fun LoginScreen(
                 )
             }
         }
-        }}
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewLoginScreen() {
+    LoginScreen(
+        onLogin = { username, password -> /* Handle login action */ },
+        onNavigateToForgotPassword = { /* Handle forgot password navigation */ },
+        onNavigateToRegister = { /* Handle register navigation */ }
+    )
+}
