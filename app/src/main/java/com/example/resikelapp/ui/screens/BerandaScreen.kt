@@ -1,4 +1,4 @@
-package com.example.resikelapp.ui.screen
+package com.example.resikelapp.ui.screens
 
 
 import android.graphics.BlurMaskFilter
@@ -198,9 +198,6 @@ fun BerandaScreen() {
                     }
                 }
             }
-
-
-
         }
 
         Spacer(modifier = Modifier.height(32.dp))
