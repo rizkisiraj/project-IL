@@ -169,6 +169,9 @@ fun BerandaScreen() {
                     modifier =
                     Modifier
                         .width(132.dp)
+                        .dropShadow(
+                            shape = RoundedCornerShape(10.dp)
+                        )
                     ) {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -226,6 +229,9 @@ fun BerandaScreen() {
                     modifier =
                     Modifier
                         .width(132.dp)
+                        .dropShadow(
+                            shape = RoundedCornerShape(10.dp)
+                        )
                 ) {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
