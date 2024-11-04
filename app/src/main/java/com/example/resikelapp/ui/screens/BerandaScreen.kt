@@ -228,33 +228,58 @@ fun BerandaScreen() {
                     ),
                     modifier =
                     Modifier
-                        .width(132.dp)
+                        .width(216.dp)
                         .dropShadow(
-                            shape = RoundedCornerShape(10.dp)
+                            shape = RoundedCornerShape(16.dp)
                         )
                 ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    Row(
                         modifier = Modifier
-                            .padding(8.dp)
                             .fillMaxWidth()
-                    ) {
-                        Icon(
-                            Icons.Outlined.People,
-                            contentDescription = null
-                        )
-                        Text(
-                            "Wilayah Kabupaten Komunitas",
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.titleSmall
-                        )
-                        Text(
-                            "24 Mei 2024",
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                            .height(IntrinsicSize.Min)
+                    ){
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .width(72.dp)
+                                .background(GreenBase)
+                                .padding(8.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.people),
+                                contentDescription = "People's Icon",
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Text(
+                                "Paper Fighter",
+                                style = MaterialTheme.typography.bodySmall,
+                                textAlign = TextAlign.Center,
+                                color = Color.White
+                            )
+                        }
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .padding(8.dp)
+                        ) {
+                            Text(
+                                "Workshop Milah Sampah",
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.titleMedium
+                                )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(
+                                "12 September",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Gray
+                            )
+                        }
                     }
                 }
             }
