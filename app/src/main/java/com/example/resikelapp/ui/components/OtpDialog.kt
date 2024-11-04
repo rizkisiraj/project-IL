@@ -1,8 +1,8 @@
 package com.example.resikelapp.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,9 +19,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.zIndex
 import com.example.resikelapp.R
-import androidx.compose.ui.tooling.preview.Preview // Add this import
+import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +46,7 @@ fun OtpDialog(
                         .width(320.dp)
                         .height(240.dp)
                         .background(color = Color(0xFF3C8161), shape = RoundedCornerShape(24.dp))
-                        .padding(start = 40.dp, end = 40.dp, bottom = 34.dp),
+                        .padding(start = 40.dp, end = 40.dp, top = 34.dp ,bottom = 34.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
@@ -74,7 +73,7 @@ fun OtpDialog(
                             onValueChange = { otpCode = it.filter { char -> char.isDigit() } },
                             placeholder = {
                                 Text(
-                                    text = "xxxx - xxxx",
+                                    text = "     xxxx - xxxx",
                                     textAlign = TextAlign.Center,
                                     style = TextStyle(
                                         fontSize = 22.sp,
@@ -120,23 +119,15 @@ fun OtpDialog(
                     }
                 }
 
-                // Circle Shape dengan ikon kunci
-                Box(
+                // ikon Lock
+                Image(
+                    painter = painterResource(id = R.drawable.ic_circle_lock),
+                    contentDescription = "Lock Icon with Circle Background",
                     modifier = Modifier
                         .size(70.dp)
-                        .background(color = Color.White, shape = CircleShape)
-                        .align(Alignment.TopCenter)
-                        .offset(y = (0).dp)
-                        .zIndex(1f),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_lock),
-                        contentDescription = "Lock Icon",
-                        tint = Color(0xFF3C8161),
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
+                        .align(Alignment.Center)
+                        .offset(y = (-120).dp)
+                )
             }
         },
         confirmButton = {},
