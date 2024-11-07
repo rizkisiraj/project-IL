@@ -40,15 +40,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.resikelapp.R
+import com.example.resikelapp.data.model.Screen
 import com.example.resikelapp.ui.components.ResourceItem
 import com.example.resikelapp.ui.components.ScheduleItem
 import com.example.resikelapp.ui.theme.GreenBase
 import com.example.resikelapp.ui.theme.GreenSecondary
 
-@Preview(showBackground = true)
 @Composable
-fun BerandaScreen() {
+fun BerandaScreen(navController: NavController) {
     val beritaScrollState = rememberScrollState()
     val komunitasScrollState = rememberScrollState()
 
@@ -145,14 +146,20 @@ fun BerandaScreen() {
 
         Spacer(Modifier.height(32.dp))
 
-        Text(
-            text = "Berita Terkini",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Medium,
-            color = GreenBase,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
+        TextButton(
+            onClick = {
+                navController.navigate(Screen.News.route!!)
+            }
+        ) {
+            Text(
+                text = "Berita Terkini",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Medium,
+                color = GreenBase,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
 

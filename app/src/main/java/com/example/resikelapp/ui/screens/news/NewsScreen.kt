@@ -29,14 +29,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.resikelapp.R
+import com.example.resikelapp.data.model.Screen
 import com.example.resikelapp.ui.theme.GreenBase
 import com.example.resikelapp.ui.theme.GreenSecondary
 
-@OptIn(ExperimentalFoundationApi::class)
-@Preview(showBackground = true)
+
 @Composable
-fun NewsScreen() {
+fun NewsScreen(navController: NavController) {
     val pagerState = rememberPagerState(pageCount = {
         4
     })
@@ -122,6 +123,9 @@ fun NewsScreen() {
                     colors = CardDefaults.cardColors(
                         containerColor = GreenSecondary,
                     ),
+                    onClick = {
+                        navController.navigate(Screen.DetailNews.route!!)
+                    },
                     modifier =
                     Modifier
                         .width(132.dp)

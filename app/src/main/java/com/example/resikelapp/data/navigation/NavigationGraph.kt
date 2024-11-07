@@ -11,10 +11,8 @@ import com.example.resikelapp.ui.screens.community.Community
 @Composable
 fun NavigationGraph(navController: NavHostController) {
 
-    NavHost(navController = navController, startDestination = Screen.Home.route!!) {
-        composable(route = Screen.Home.route) {
-            BerandaScreen()
-        }
+    NavHost(navController = navController, startDestination = "beranda") {
+        berandaGraph(navController)
         composable(route = Screen.Map.route!!) {
             TODO()
         }

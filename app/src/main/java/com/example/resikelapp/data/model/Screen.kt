@@ -18,6 +18,8 @@ sealed class Screen(
     object Cart: Screen("cart", null, Icons.Filled.ShoppingCart)
     object Community: Screen("community", "Commun", Icons.Outlined.People)
     object Profile: Screen("profile", "Profile", Icons.Outlined.Person)
+    object News: Screen("news", "News", null)
+    object DetailNews: Screen("detail_news", "Detail News", null )
 }
 
 val screenList = listOf(
