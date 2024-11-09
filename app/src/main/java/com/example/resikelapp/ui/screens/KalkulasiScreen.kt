@@ -51,7 +51,6 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
 
         Spacer(modifier = Modifier.height(106.dp))
 
-
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -59,9 +58,8 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
             SampahItemCard("Kertas", "50 Pts")
             SampahItemCard("Plastik", "50 Pts")
 
-
             IconButton(
-                onClick = { /* TODO: Add item action */ },
+                onClick = { },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .size(48.dp)
@@ -100,7 +98,7 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Button(
-            onClick = { /* TODO: Confirm action */ },
+            onClick = { },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -117,7 +115,7 @@ fun SampahItemCard(title: String, points: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp), // Menambah tinggi card agar lebih fleksibel
+            .height(100.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1E5631))
@@ -125,7 +123,6 @@ fun SampahItemCard(title: String, points: String) {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Konten card (Text dan Arrow DropDown)
             Row(
                 modifier = Modifier
                     .fillMaxSize()
@@ -133,11 +130,10 @@ fun SampahItemCard(title: String, points: String) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Column for Sampah Title and kg
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(1f), // Menambahkan weight agar kolom ini mengambil ruang yang lebih besar
+                        .weight(1f),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Row(
@@ -156,42 +152,40 @@ fun SampahItemCard(title: String, points: String) {
                             modifier = Modifier.padding(start = 8.dp)
                         )
                     }
-                    Spacer(modifier = Modifier.height(4.dp)) // Spacer to add some space between title and kg text
+                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "___ Kg", // Teks default yang ditampilkan
+                        text = "___ Kg",
                         color = Color.White.copy(alpha = 0.7f),
                         fontSize = 14.sp
                     )
                 }
             }
 
-            // Teks poin di sebelah kanan dengan styling dari Figma
             Text(
-                text = points, // Menampilkan poin yang diteruskan sebagai parameter
+                text = points,
                 style = TextStyle(
                     fontSize = 25.sp,
                     lineHeight = 36.sp,
-                    fontFamily = FontFamily(Font(R.font.roboto_bold)), // Pastikan font Roboto sudah ada di project
+                    fontFamily = FontFamily(Font(R.font.roboto_bold)),
                     fontWeight = FontWeight(600),
                     color = Color(0xFFFFFFFF),
                 ),
                 modifier = Modifier
-                    .align(Alignment.CenterEnd) // Menyusun teks di bagian kanan card
-                    .padding(end = 16.dp) // Memberikan sedikit ruang dari tepi kanan
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 16.dp)
             )
 
-            // Tanda silang di pojok kanan atas
             IconButton(
-                onClick = { /* TODO: Add action for close */ },
+                onClick = { },
                 modifier = Modifier
-                    .size(24.dp) // Menetapkan ukuran ikon
-                    .align(Alignment.TopEnd) // Mengatur ikon agar berada di pojok kanan atas
+                    .size(24.dp)
+                    .align(Alignment.TopEnd)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_close), // Pastikan path dan nama file sesuai
+                    painter = painterResource(id = R.drawable.ic_close),
                     contentDescription = "Close",
                     modifier = Modifier.fillMaxSize(),
-                    tint = Color.White // Mengatur warna ikon agar terlihat dengan baik
+                    tint = Color.White
                 )
             }
         }
