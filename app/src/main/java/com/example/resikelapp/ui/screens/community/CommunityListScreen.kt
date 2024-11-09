@@ -12,6 +12,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.resikelapp.R
 import com.example.resikelapp.data.model.Community
 import com.example.resikelapp.data.model.CommunityData
@@ -20,7 +21,8 @@ import com.example.resikelapp.ui.components.Search
 
 @Composable
 fun CommunityListScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavController
 ) {
     var searchText by remember { mutableStateOf("") }
 
@@ -37,7 +39,9 @@ fun CommunityListScreen(
                     .fillMaxSize()
             ) {
                 items(filteredCommunities) { community ->
-                    CommunityItem(community = community)
+                    CommunityItem(community = community, onClick = {
+                        navController.navigate("communityDetail")
+                    })
                 }
             }
         } else {
@@ -60,8 +64,8 @@ fun CommunityListScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CommunityListScreenPreview() {
-    CommunityListScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun CommunityListScreenPreview() {
+//    CommunityListScreen()
+//}

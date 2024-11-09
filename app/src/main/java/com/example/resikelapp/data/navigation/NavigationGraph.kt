@@ -19,9 +19,7 @@ fun NavigationGraph(navController: NavHostController) {
         composable(route = Screen.Profile.route!!) {
             TODO()
         }
-        composable(route = Screen.Community.route!!) {
-            Community()
-        }
+        komunitasGraph(navController = navController)
 
     }
 }

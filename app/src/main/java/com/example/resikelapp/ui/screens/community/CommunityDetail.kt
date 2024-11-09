@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.resikelapp.R
 import com.example.resikelapp.data.model.AcaraData
@@ -34,8 +35,8 @@ import com.example.resikelapp.ui.theme.ResikelAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(
-    navController: NavHostController,
+fun CommunityDetailScreen(
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxSize()) {
@@ -134,11 +135,11 @@ fun DetailScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DetailScreenPreview() {
-    // You can preview the DetailScreen without navigation logic for now
-    ResikelAppTheme {
-        DetailScreen(navController = NavHostController(context = LocalContext.current))
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DetailScreenPreview() {
+//    // You can preview the DetailScreen without navigation logic for now
+//    ResikelAppTheme {
+//        DetailScreen(navController = NavHostController(context = LocalContext.current))
+//    }
+//}

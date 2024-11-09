@@ -29,6 +29,7 @@ import com.example.resikelapp.data.model.CommunityData
 fun CommunityItem(
     community: Community,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     ElevatedCard(
         modifier = modifier
@@ -38,6 +39,7 @@ fun CommunityItem(
             containerColor = colorResource(R.color.third),
         ),
         shape = RectangleShape,
+        onClick = onClick,
         elevation = CardDefaults.elevatedCardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(20.dp)) {

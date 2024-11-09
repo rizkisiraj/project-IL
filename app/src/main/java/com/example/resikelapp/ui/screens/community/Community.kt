@@ -11,12 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.example.resikelapp.R
 import com.example.resikelapp.ui.components.Search
 
 @Composable
 fun Community(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavController
 ) {
     Search()
     Box(
@@ -38,8 +40,8 @@ fun Community(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CommunityPreview() {
-    Community()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun CommunityPreview() {
+//    Community()
+//}
