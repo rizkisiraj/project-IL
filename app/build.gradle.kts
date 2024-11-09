@@ -50,6 +50,7 @@ android {
         implementation(libs.androidx.material.icons.extended)
 //        implementation(libs.material3)
         implementation(libs.androidx.ui.text)
+        implementation("androidx.core:core-splashscreen:1.0.0")
         implementation(libs.androidx.ui.text.google.fonts)
         implementation(libs.androidx.core.ktx)
         implementation(libs.androidx.lifecycle.runtime.ktx)

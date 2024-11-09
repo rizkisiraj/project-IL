@@ -13,20 +13,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.resikelapp.R
 
 @Composable
-fun HomeScreen() {
+fun SplashScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
     ) {
-        // Background Image
         Image(
             painter = painterResource(id = R.drawable.home_bg),
-            contentDescription = "Home Background",
+            contentDescription = "Splash Background",
             modifier = Modifier.fillMaxSize()
         )
-
-        // Logo di tengah
         Image(
             painter = painterResource(id = R.drawable.resikel_logo),
             contentDescription = "Resikel Logo",
@@ -39,6 +36,6 @@ fun HomeScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewHomeScreen() {
-    HomeScreen()
+fun PreviewSplashScreen() {
+    SplashScreen()
 }
