@@ -27,7 +27,9 @@ import com.example.resikelapp.data.model.CommunityData
 
 @Composable
 fun CommunityItem(
-    community: Community,
+    nama: String,
+    description: String,
+    jenisSampah: List<String>,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
@@ -42,7 +44,7 @@ fun CommunityItem(
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
-                text = community.nama,
+                text = nama,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleMedium.copy(
@@ -50,7 +52,7 @@ fun CommunityItem(
                 ),
             )
             Text(
-                text = community.description,
+                text = description,
                 style = MaterialTheme.typography.titleSmall,
             )
 
@@ -60,7 +62,7 @@ fun CommunityItem(
                     .fillMaxWidth()
                     .padding(top = 8.dp),
             ) {
-                community.jenisSampah.forEach { jenis ->
+                jenisSampah.forEach { jenis ->
                     Card(
                         modifier = Modifier
                             .border(BorderStroke(1.dp, Color.Black), shape = RoundedCornerShape(30.dp)),
@@ -90,8 +92,9 @@ fun CommunityItem(
 fun CommunityItemPreview() {
     MaterialTheme {
         CommunityItem(
-            community = CommunityData.communities[1],
-            modifier = Modifier.padding(8.dp)
+            nama = "Bottle Busters",
+            description = "Komunitas Pemerhati Botol Plastik",
+            jenisSampah = listOf("Botol", "Plastik"),
         )
     }
 }
