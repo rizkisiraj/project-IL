@@ -17,6 +17,9 @@ sealed class Screen(
     object Map: Screen("map", "Map", Icons.Outlined.Map)
     object Cart: Screen("cart", null, Icons.Filled.ShoppingCart)
     object Community: Screen("community", "Commun", Icons.Outlined.People)
+    object DetailCommunity: Screen("community/{communityId}", "Community", null){
+        fun createRoute(communityId: Long) = "community/$communityId"
+    }
     object Profile: Screen("profile", "Profile", Icons.Outlined.Person)
     object News: Screen("news", "News", null)
     object DetailNews: Screen("detail_news", "Detail News", null )
