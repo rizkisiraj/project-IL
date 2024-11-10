@@ -52,6 +52,7 @@ android {
         implementation(libs.navigation.compose)
         implementation(libs.androidx.navigation.compose)
         implementation(libs.androidx.ui.text)
+        implementation("androidx.core:core-splashscreen:1.0.0")
         implementation(libs.androidx.ui.text.google.fonts)
         implementation(libs.androidx.core.ktx)
         implementation(libs.androidx.lifecycle.runtime.ktx)
