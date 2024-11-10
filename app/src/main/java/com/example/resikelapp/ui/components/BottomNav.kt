@@ -24,7 +24,6 @@ fun BottomNav(navController: NavHostController) {
 
     NavigationBar(
         modifier = Modifier
-            .padding(horizontal = 12.dp)
             .height(80.dp),
         tonalElevation = 4.dp,
         containerColor = Color.White
