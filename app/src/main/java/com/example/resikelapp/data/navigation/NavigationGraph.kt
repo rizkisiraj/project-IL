@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.resikelapp.data.model.Screen
 import com.example.resikelapp.ui.screens.BerandaScreen
+import com.example.resikelapp.ui.screens.KalkulasiScreen
 import com.example.resikelapp.ui.screens.community.Community
 import com.example.resikelapp.ui.screens.community.CommunityDetail
 
@@ -41,6 +42,11 @@ fun NavigationGraph(navController: NavHostController) {
                     navController.navigateUp()
                 },
             )
+        }
+        composable(
+            route = Screen.Cart.route!!
+        ) {
+            KalkulasiScreen()
         }
 
     }
