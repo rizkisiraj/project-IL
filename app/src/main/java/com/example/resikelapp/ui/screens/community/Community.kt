@@ -1,8 +1,11 @@
+
 package com.example.resikelapp.ui.screens.community
 
+import android.graphics.Color
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,15 +16,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.resikelapp.R
 import com.example.resikelapp.data.repository.ResikelRepository
@@ -40,15 +48,21 @@ fun Community(
     val query by viewModel.query
     var isSearchFocused by remember { mutableStateOf(false) }
 
+    val joinedCommunities = groupedCommunity.values.flatten().filter { it.gabungStatus }
+    val notJoinedCommunities = groupedCommunity.values.flatten().filter { !it.gabungStatus }
+
     Box(
         modifier = modifier
     ) {
         val scope = rememberCoroutineScope()
         val listState = rememberLazyListState()
-        LazyColumn (
+        LazyColumn(
             state = listState,
-            contentPadding = PaddingValues(bottom = 80.dp)
-        ){
+            contentPadding = PaddingValues(bottom = 80.dp),
+            modifier = Modifier
+                .background(colorResource(R.color.white))
+
+        ) {
             item {
                 Search(
                     query = query,
@@ -59,6 +73,7 @@ fun Community(
                         }
                 )
             }
+
             if (isSearchFocused) {
                 groupedCommunity.forEach { (_, communities) ->
                     items(communities, key = { it.id }) { community ->
@@ -73,32 +88,120 @@ fun Community(
                     }
                 }
             } else {
-                item {
-                    Column{
-                        Image(
-                            painter = painterResource(id = R.drawable.gambar_belum_bergabung),
-                            contentDescription = "Centered Image",
-                            modifier = Modifier.align(Alignment.CenterHorizontally) // Mengatur gambar di tengah
-                        )
-                        Text(
-                            text = "Kamu Belum Bergabung Komunitas Nih,\n Yuk Gabung Sekarang",
-                            textAlign = TextAlign.Center,
+                if (joinedCommunities.isNotEmpty()) {
+                    item {
+                        Box(
                             modifier = Modifier
-                                .fillMaxWidth() // Membuat teks menempati seluruh lebar untuk center align
-                                .padding(top = 8.dp) // Jarak opsional antara gambar dan teks
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, top = 16.dp)
+                        ) {
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .align(Alignment.CenterStart)
+                                    .fillMaxWidth(),
+                                thickness = 1.dp,
+                                color = colorResource(id = R.color.primary)
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .padding(start = 30.dp)
+                                    .zIndex(1f)
+                            ) {
+                                Text(
+                                    text = "Sudah Diikuti",
+                                    modifier = Modifier
+                                        .background(colorResource(R.color.white))
+                                        .align(Alignment.CenterStart)
+                                        .padding(horizontal = 14.dp)
+                                )
+                            }
+
+                        }
+                    }
+                    items(joinedCommunities, key = { it.id }) { community ->
+                        CommunityItem(
+                            nama = community.nama,
+                            description = community.description,
+                            jenisSampah = community.jenisSampah,
+                            modifier = Modifier.clickable {
+                                navigateToDetail(community.id)
+                            }
                         )
                     }
                 }
+
+                if (notJoinedCommunities.isNotEmpty() && joinedCommunities.isNotEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp)
+                        ) {
+                            // Garis horizontal
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .align(Alignment.CenterStart)
+                                    .fillMaxWidth(),
+                                thickness = 1.dp,
+                                color = colorResource(id = R.color.primary)
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .padding(start = 30.dp)
+                                    .zIndex(1f)
+                            ) {
+                                Text(
+                                    text = "Belum Diikuti",
+                                    modifier = Modifier
+                                        .background(colorResource(R.color.white))
+                                        .align(Alignment.CenterStart)
+                                        .padding(horizontal = 14.dp)
+                                )
+                            }
+
+                        }
+                    }
+                    items(notJoinedCommunities, key = { it.id }) { community ->
+                        CommunityItem(
+                            nama = community.nama,
+                            description = community.description,
+                            jenisSampah = community.jenisSampah,
+                            modifier = Modifier.clickable {
+                                navigateToDetail(community.id)
+                            }
+                        )
+                    }
+                } else {
+                    item {
+                        Column {
+                            Image(
+                                painter = painterResource(id = R.drawable.gambar_belum_bergabung),
+                                contentDescription = "Centered Image",
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+                            Text(
+                                text = "Kamu Belum Bergabung Komunitas Nih,\n Yuk Gabung Sekarang",
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp)
+                            )
+                        }
+                    }
+                }
+
             }
         }
-
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
 fun CommunityPreview() {
     Community(
-        navigateToDetail = {}
+        navigateToDetail={}
     )
 }

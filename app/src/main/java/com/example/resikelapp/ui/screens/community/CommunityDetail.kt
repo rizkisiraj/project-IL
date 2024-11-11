@@ -11,9 +11,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Output
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,20 +47,21 @@ fun CommunityDetail(
     modifier: Modifier = Modifier,
     viewModel: CommunityViewModel = viewModel(factory = ViewModelFactory(ResikelRepository())),
 ) {
+    val gabungStatus by viewModel.gabungStatus.collectAsState()
+
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
             is UiState.Loading -> {
                 viewModel.getOrderCommunityById(communityId)
             }
             is UiState.Success -> {
+
                 val data = uiState.data
 
-                // Wrapping the main content in LazyColumn for scrollability
                 LazyColumn(
                     modifier = modifier.fillMaxSize(),
                     contentPadding = PaddingValues(bottom = 80.dp)
                 ) {
-                    // TopAppBar item
                     item {
                         TopAppBar(
                             title = { Text(text = "", fontSize = 20.sp) },
@@ -75,7 +78,6 @@ fun CommunityDetail(
                         )
                     }
 
-                    // Community Detail Section
                     item {
                         Row(
                             modifier = Modifier
@@ -98,27 +100,45 @@ fun CommunityDetail(
                                     text = data.community.description,
                                     style = TextStyle(fontSize = 12.sp)
                                 )
+
                                 Button(
-                                    onClick = { /* Handle Join Action */ },
+                                    onClick = {
+                                        if (data.community.gabungStatus) {
+                                            viewModel.updateGabungStatus(data.community.id, false)
+                                        } else {
+                                            viewModel.updateGabungStatus(data.community.id, true)
+                                        }
+                                    },
                                     shape = RoundedCornerShape(50),
                                     colors = ButtonDefaults.buttonColors(colorResource(id = R.color.primary)),
                                     modifier = Modifier.padding(top = 8.dp)
                                 ) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            imageVector = Icons.Filled.Add,
-                                            contentDescription = "Add",
-                                            tint = Color.White
-                                        )
-                                        Spacer(modifier = Modifier.width(6.dp))
-                                        Text(text = "Gabung", color = Color.White)
+
+                                        if (gabungStatus) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Add,
+                                                contentDescription = "Add",
+                                                tint = Color.White
+                                            )
+                                            Spacer(modifier = Modifier.width(6.dp))
+                                            Text(text = "Keluar", color = Color.White)
+                                        } else {
+                                            Icon(
+                                                imageVector = Icons.Filled.Output,
+                                                contentDescription = "Add",
+                                                tint = Color.White
+                                            )
+                                            Spacer(modifier = Modifier.width(6.dp))
+                                            Text(text = "Gabung", color = Color.White)
+                                        }
                                     }
                                 }
+
                             }
                         }
                     }
 
-                    // Community Description
                     item {
                         Text(
                             modifier = Modifier.padding(30.dp),
@@ -129,7 +149,6 @@ fun CommunityDetail(
                         )
                     }
 
-                    // Section Title for "Acara"
                     item {
                         Text(
                             modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
@@ -142,7 +161,6 @@ fun CommunityDetail(
                         )
                     }
 
-                    // List of Acara Items
                     items(AcaraData.acara) { acara ->
                         AcaraItem(
                             acara = acara,
@@ -154,7 +172,6 @@ fun CommunityDetail(
                 }
             }
             is UiState.Error -> {
-                // Display an error message or handle the error state
             }
         }
     }
@@ -164,7 +181,6 @@ fun CommunityDetail(
 @Composable
 fun CommunityDetailPreview() {
     ResikelAppTheme {
-        CommunityDetail(communityId = 1, navigateBack = {})
-    }
+        CommunityDetail(communityId = 1, navigateBack={})
+        }
 }
-

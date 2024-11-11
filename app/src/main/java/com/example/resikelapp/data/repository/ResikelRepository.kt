@@ -33,4 +33,10 @@ class ResikelRepository {
             it.community.id == communityId
         }
     }
+
+    fun updateGabungStatus(communityId: Long, status: Boolean) {
+        val order = orderCommunity.find { it.community.id == communityId }
+        order?.community?.gabungStatus = status
+        Log.d("ResikelRepository", "Updated gabungStatus for communityId $communityId to $status")
+    }
 }
