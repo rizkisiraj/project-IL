@@ -31,7 +31,6 @@ fun CommunityItem(
     description: String,
     jenisSampah: List<String>,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
 ) {
     ElevatedCard(
         modifier = modifier
@@ -41,7 +40,6 @@ fun CommunityItem(
             containerColor = colorResource(R.color.third),
         ),
         shape = RectangleShape,
-        onClick = onClick,
         elevation = CardDefaults.elevatedCardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(20.dp)) {

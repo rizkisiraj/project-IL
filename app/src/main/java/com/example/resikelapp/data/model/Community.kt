@@ -5,5 +5,5 @@ data class Community (
     val nama: String,
     val description: String,
     val jenisSampah: List<String>,
-
+    var gabungStatus: Boolean=false
 )

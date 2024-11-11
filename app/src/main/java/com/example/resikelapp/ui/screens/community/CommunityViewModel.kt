@@ -24,6 +24,9 @@ class CommunityViewModel(private val repository: ResikelRepository): ViewModel()
     private val _query = mutableStateOf("")
     val query: State<String> get() = _query
 
+    private val _gabungStatus = MutableStateFlow(false)
+    val gabungStatus: StateFlow<Boolean> get() = _gabungStatus
+
     fun search(newQuery: String) {
         _query.value = newQuery
         _groupedComunities.value = repository.searchCommunity(_query.value)
@@ -39,7 +42,17 @@ class CommunityViewModel(private val repository: ResikelRepository): ViewModel()
     fun getOrderCommunityById(communityId: Long) {
         viewModelScope.launch {
             _uiState.value = UiState.Loading
+            val orderCommunity = repository.getOrderCommunityById(communityId)
+            _gabungStatus.value = orderCommunity.community.gabungStatus
             _uiState.value = UiState.Success(repository.getOrderCommunityById(communityId))
         }
     }
+
+    fun updateGabungStatus(communityId: Long, status: Boolean) {
+        viewModelScope.launch {
+            repository.updateGabungStatus(communityId, status)
+            _gabungStatus.value = status
+            }
+        }
+
 }
