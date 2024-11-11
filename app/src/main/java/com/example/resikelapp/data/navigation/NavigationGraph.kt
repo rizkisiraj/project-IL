@@ -10,13 +10,15 @@ import androidx.navigation.navArgument
 import com.example.resikelapp.data.model.Screen
 import com.example.resikelapp.ui.screens.BerandaScreen
 import com.example.resikelapp.ui.screens.KalkulasiScreen
+import com.example.resikelapp.ui.screens.LoginScreen
+import com.example.resikelapp.ui.screens.RegisterScreen
 import com.example.resikelapp.ui.screens.community.Community
 import com.example.resikelapp.ui.screens.community.CommunityDetail
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
 
-    NavHost(navController = navController, startDestination = "beranda") {
+    NavHost(navController = navController, startDestination = "register") {
         berandaGraph(navController)
         composable(route = Screen.Map.route!!) {
             TODO()
@@ -24,30 +26,32 @@ fun NavigationGraph(navController: NavHostController) {
         composable(route = Screen.Profile.route!!) {
             TODO()
         }
-        composable(route = Screen.Community.route!!) {
-            Community(
-                navigateToDetail = { communityId ->
-                    navController.navigate(Screen.DetailCommunity.createRoute(communityId))
-                }
-            )
-        }
-        composable(
-            route = Screen.DetailCommunity.route!!,
-            arguments = listOf(navArgument("communityId") {type = NavType.LongType})
-        ) {
-            val id = it.arguments?.getLong("communityId") ?: -1L
-            CommunityDetail(
-                communityId = id,
-                navigateBack = {
-                    navController.navigateUp()
-                },
-            )
-        }
         composable(
             route = Screen.Cart.route!!
         ) {
             KalkulasiScreen()
         }
-
+        communityGraph(navController)
+        composable(
+            route = "login"
+        ) {
+            LoginScreen(
+                onLogin = { _, _ -> navController.navigate("beranda")},
+                onNavigateToForgotPassword = {},
+                onNavigateToRegister = {
+                    navController.navigate("register")
+                }
+            )
+        }
+        composable(
+            route = "register"
+        ) {
+            RegisterScreen(
+                onRegister = { _, _, _, _ -> },
+                onNavigateToLogin = {
+                    navController.navigate("login")
+                }
+            )
+        }
     }
 }

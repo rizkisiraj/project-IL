@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,6 +53,7 @@ import com.example.resikelapp.ui.theme.GreenSecondary
 fun BerandaScreen(navController: NavController) {
     val beritaScrollState = rememberScrollState()
     val komunitasScrollState = rememberScrollState()
+    var saya = mutableStateOf(false)
 
     Column(
         modifier = Modifier

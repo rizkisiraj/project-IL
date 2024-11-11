@@ -31,7 +31,7 @@ fun MainScreen() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 
-            val bottomBarDestination = currentDestination?.route == Screen.Cart.route
+            val bottomBarDestination = currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register"
             if(!bottomBarDestination) {
                 BottomNav(navController)
             }
@@ -40,7 +40,7 @@ fun MainScreen() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 
-            val bottomBarDestination = currentDestination?.route == Screen.Cart.route
+            val bottomBarDestination = currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register"
             if(!bottomBarDestination) {
                 FloatingActionButton(
                     onClick = {
