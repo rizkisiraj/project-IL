@@ -21,8 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ResikelAppTheme {
-                var showLoginScreen by remember { mutableStateOf(true) } // Kontrol tampilan login atau register
-
+                var showLoginScreen by remember { mutableStateOf(true) }
                 MainScreen()
             }
         }
