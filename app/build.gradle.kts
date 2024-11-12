@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -47,6 +48,8 @@ android {
 }
     dependencies {
         implementation(platform(libs.androidx.compose.bom))
+        implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+        implementation("com.google.firebase:firebase-analytics")
         implementation(libs.androidx.material.icons.extended)
 //        implementation(libs.material3)
         implementation(libs.navigation.compose)

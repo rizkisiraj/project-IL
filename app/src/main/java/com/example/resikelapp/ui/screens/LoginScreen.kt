@@ -140,7 +140,7 @@ fun LoginScreen(
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent,
                     cursorColor = Color.White,
-                    focusedTextColor = Color.White,  // Setting text color
+                    focusedTextColor = Color.White,
                 )
             )
         }
