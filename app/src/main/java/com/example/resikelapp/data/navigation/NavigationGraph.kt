@@ -20,6 +20,7 @@ fun NavigationGraph(navController: NavHostController) {
 
     NavHost(navController = navController, startDestination = "register") {
         berandaGraph(navController)
+        kalkulasiGraph(navController)
         composable(route = Screen.Map.route!!) {
             TODO()
         }
