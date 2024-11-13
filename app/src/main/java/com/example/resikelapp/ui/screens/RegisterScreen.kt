@@ -56,7 +56,7 @@ fun RegisterScreen(
                 fontWeight = FontWeight.Bold,
                 color = Color(35 / 255f, 106 / 255f, 76 / 255f, 1f)
             ),
-            modifier = Modifier.padding(bottom = 68.dp)
+            modifier = Modifier.padding(bottom = 38.dp)
         )
 
         // Input Nama Depan
@@ -98,7 +98,7 @@ fun RegisterScreen(
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                placeholder = { Text("Masukkan Password", color = Color.White) },
+                placeholder = { Text("Masukkan Password", color = Color.White, style = TextStyle(fontSize = 16.sp)) },
                 singleLine = true,
                 trailingIcon = {
                     val image = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
@@ -243,7 +243,7 @@ fun InputField(
             OutlinedTextField(
                 value = value,
                 onValueChange = onValueChange,
-                placeholder = { Text("Masukkan $label", color = Color.White) },
+                placeholder = { Text("Masukkan $label", color = Color.White, style = TextStyle(fontSize = 16.sp)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxSize(),
                 colors = TextFieldDefaults.outlinedTextFieldColors(

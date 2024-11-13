@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "336611640021",
+    "project_id": "resikelapp",
+    "storage_bucket": "resikelapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336611640021:android:243b29f41aa1cdbe32985c",
+        "android_client_info": {
+          "package_name": "com.example.resikelapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWmWflmj6hfas4YEiHumD10aJ9bbNLKKc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
