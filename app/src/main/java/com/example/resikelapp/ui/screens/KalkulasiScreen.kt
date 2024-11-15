@@ -2,18 +2,15 @@ package com.example.resikelapp.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,12 +52,12 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // SampahItemCard list
-        Column(
+        // LazyColumn for SampahItemCards
+        LazyColumn(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            sampahCards.forEachIndexed { index, selectedWasteType ->
+            itemsIndexed(sampahCards) { index, selectedWasteType ->
                 SampahItemCard(
                     selectedWasteType = selectedWasteType,
                     onWasteTypeSelected = { newSelection ->
@@ -68,12 +65,19 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
                             set(index, newSelection)
                         }
                     },
-                    points = "50 Pts"
+                    points = "50 Pts",
+                    onRemoveCard = { // Panggil untuk menghapus kartu dari daftar
+                        sampahCards = sampahCards.toMutableList().apply {
+                            removeAt(index)
+                        }
+                    }
                 )
             }
         }
 
-        // Add Button to add more cards
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Icon Add in Center Bottom
         IconButton(
             onClick = {
                 sampahCards = sampahCards + "Pilih Jenis Sampah"
@@ -81,10 +85,9 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .size(48.dp)
-                .padding(top = 8.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.Add,
+                painter = painterResource(id = R.drawable.ic_add),
                 contentDescription = "Tambah",
                 tint = Color(0xFF1E5631)
             )
@@ -127,4 +130,10 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
             Text(text = "Konfirmasi", color = Color.White, fontSize = 16.sp)
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewKalkulasiScreen() {
+    KalkulasiScreen()
 }

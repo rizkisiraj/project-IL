@@ -20,7 +20,8 @@ import com.example.resikelapp.R
 fun SampahItemCard(
     selectedWasteType: String,
     onWasteTypeSelected: (String) -> Unit,
-    points: String
+    points: String,
+    onRemoveCard: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -74,7 +75,7 @@ fun SampahItemCard(
             )
 
             IconButton(
-                onClick = { /* Functionality to remove card can be added here */ },
+                onClick = { onRemoveCard() },
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.TopEnd)

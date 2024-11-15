@@ -80,7 +80,7 @@ fun LoginScreen(
         Box(
             modifier = Modifier
                 .width(380.dp)
-                .height(48.dp)
+                .height(56.dp)
                 .background(color = Color(0xFF3C8161), shape = RoundedCornerShape(size = 10.dp))
         ) {
             OutlinedTextField(
@@ -119,7 +119,7 @@ fun LoginScreen(
         Box(
             modifier = Modifier
                 .width(380.dp)
-                .height(48.dp)
+                .height(56.dp)
                 .background(color = Color(0xFF3C8161), shape = RoundedCornerShape(size = 10.dp))
         ) {
             OutlinedTextField(
