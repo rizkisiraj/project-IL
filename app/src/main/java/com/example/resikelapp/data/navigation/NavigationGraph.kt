@@ -11,6 +11,7 @@ import com.example.resikelapp.data.model.Screen
 import com.example.resikelapp.ui.screens.BerandaScreen
 import com.example.resikelapp.ui.screens.KalkulasiScreen
 import com.example.resikelapp.ui.screens.LoginScreen
+import com.example.resikelapp.ui.screens.MapScreen
 import com.example.resikelapp.ui.screens.RegisterScreen
 import com.example.resikelapp.ui.screens.community.Community
 import com.example.resikelapp.ui.screens.community.CommunityDetail
@@ -22,7 +23,7 @@ fun NavigationGraph(navController: NavHostController) {
         berandaGraph(navController)
         kalkulasiGraph(navController)
         composable(route = Screen.Map.route!!) {
-            TODO()
+            MapScreen()
         }
         composable(route = Screen.Profile.route!!) {
             TODO()
