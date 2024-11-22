@@ -17,9 +17,9 @@ fun NavGraphBuilder.communityGraph(navController: NavController) {
         }
         composable(
             route = Screen.DetailCommunity.route!!,
-            arguments = listOf(navArgument("communityId") {type = NavType.LongType})
+            arguments = listOf(navArgument("communityId") {type = NavType.StringType})
         ) {
-            val id = it.arguments?.getLong("communityId") ?: -1L
+            val id = it.arguments?.getString("communityId").toString()
             CommunityDetail(
                 communityId = id,
                 navigateBack = {

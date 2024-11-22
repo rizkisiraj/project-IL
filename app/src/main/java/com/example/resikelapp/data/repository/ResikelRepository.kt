@@ -28,15 +28,14 @@ class ResikelRepository {
         }
     }
 
-    fun getOrderCommunityById(communityId: Long): OrderCommunity {
+    fun getOrderCommunityById(communityId: String): OrderCommunity {
         return orderCommunity.first {
-            it.community.id == communityId
+            it.community.idCommunity == communityId
         }
     }
 
-    fun updateGabungStatus(communityId: Long, status: Boolean) {
-        val order = orderCommunity.find { it.community.id == communityId }
+    fun updateGabungStatus(communityId: String, status: Boolean) {
+        val order = orderCommunity.find { it.community.idCommunity == communityId }
         order?.community?.gabungStatus = status
-        Log.d("ResikelRepository", "Updated gabungStatus for communityId $communityId to $status")
     }
 }

@@ -64,7 +64,6 @@ fun Search(
             ),
             modifier = modifier
                 .padding(16.dp)
-                .width(194.dp)
                 .heightIn(min = 10.dp),
         ) {
         }
