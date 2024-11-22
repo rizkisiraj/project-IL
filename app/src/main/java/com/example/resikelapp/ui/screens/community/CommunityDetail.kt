@@ -42,12 +42,13 @@ import com.example.resikelapp.utils.ViewModelFactory
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommunityDetail(
-    communityId: Long,
+    communityId: String,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CommunityViewModel = viewModel(factory = ViewModelFactory(ResikelRepository())),
 ) {
     val gabungStatus by viewModel.gabungStatus.collectAsState()
+    val acaraCommunity by viewModel.acaraComunities.collectAsState()
 
     viewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
         when (uiState) {
@@ -92,21 +93,21 @@ fun CommunityDetail(
                             Spacer(modifier = Modifier.width(16.dp))
                             Column {
                                 Text(
-                                    text = data.community.nama,
+                                    text = data.nama,
                                     modifier = Modifier.padding(bottom = 8.dp),
                                     style = TextStyle(fontSize = 26.sp)
                                 )
                                 Text(
-                                    text = data.community.description,
+                                    text = data.description,
                                     style = TextStyle(fontSize = 12.sp)
                                 )
 
                                 Button(
                                     onClick = {
-                                        if (data.community.gabungStatus) {
-                                            viewModel.updateGabungStatus(data.community.id, false)
+                                        if (data.gabungStatus) {
+                                            viewModel.updateGabungStatus(data.idCommunity, false)
                                         } else {
-                                            viewModel.updateGabungStatus(data.community.id, true)
+                                            viewModel.updateGabungStatus(data.idCommunity, true)
                                         }
                                     },
                                     shape = RoundedCornerShape(50),
@@ -117,7 +118,7 @@ fun CommunityDetail(
 
                                         if (gabungStatus) {
                                             Icon(
-                                                imageVector = Icons.Filled.Add,
+                                                imageVector = Icons.Filled.Output,
                                                 contentDescription = "Add",
                                                 tint = Color.White
                                             )
@@ -125,7 +126,7 @@ fun CommunityDetail(
                                             Text(text = "Keluar", color = Color.White)
                                         } else {
                                             Icon(
-                                                imageVector = Icons.Filled.Output,
+                                                imageVector = Icons.Filled.Add,
                                                 contentDescription = "Add",
                                                 tint = Color.White
                                             )
@@ -161,7 +162,7 @@ fun CommunityDetail(
                         )
                     }
 
-                    items(AcaraData.acara) { acara ->
+                    items(acaraCommunity) { acara ->
                         AcaraItem(
                             acara = acara,
                             modifier = Modifier
@@ -181,6 +182,6 @@ fun CommunityDetail(
 @Composable
 fun CommunityDetailPreview() {
     ResikelAppTheme {
-        CommunityDetail(communityId = 1, navigateBack={})
+        CommunityDetail(communityId = "1", navigateBack={})
         }
 }
