@@ -1,5 +1,7 @@
-package com.example.resikelapp.ui.screens
+package com.example.resikelapp.ui.screens.auth
 
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -28,7 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.resikelapp.ui.components.OtpDialog
 import com.example.resikelapp.R
-
+import com.example.resikelapp.utils.GoogleSignInHelper
+import com.google.firebase.auth.FirebaseAuth
+import androidx.compose.ui.platform.LocalContext
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +47,36 @@ fun LoginScreen(
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    var showOtpDialog by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val firebaseAuth = FirebaseAuth.getInstance()
+    val googleSignInHelper = remember { GoogleSignInHelper(context as ComponentActivity, firebaseAuth) }
+
+    // Initialize Google SignIn Client
+    googleSignInHelper.initGoogleSignInClient(webClientId = "336611640021-ap6c66q7qh30sa09cpeff3mnfab6arl7.apps.googleusercontent.com") // Ganti dengan Web Client ID Firebase
+
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val data = result.data
+        googleSignInHelper.handleSignInResult(
+            data = data,
+            onSuccess = { account ->
+                googleSignInHelper.authenticateWithFirebase(
+                    account = account,
+                    onSuccess = {
+                        Toast.makeText(context, "Login berhasil!", Toast.LENGTH_SHORT).show()
+                    },
+                    onError = { error ->
+                        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                    }
+                )
+            },
+            onError = { error ->
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -51,6 +86,7 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Spacer(modifier = Modifier.height(40.dp))
+
         // Judul
         Text(
             text = "Masuk",
@@ -58,12 +94,12 @@ fun LoginScreen(
                 fontSize = 40.sp,
                 fontFamily = FontFamily(Font(R.font.roboto_bold)),
                 fontWeight = FontWeight.Bold,
-                color = Color(35 / 255f, 106 / 255f, 76 / 255f, 1f)
+                color = Color(0xFF236A4C)
             ),
             modifier = Modifier.padding(bottom = 68.dp)
         )
 
-        // Label dan Kolom Username
+        // Kolom Username
         Text(
             text = "Username",
             style = MaterialTheme.typography.bodyMedium.copy(
@@ -81,7 +117,7 @@ fun LoginScreen(
             modifier = Modifier
                 .width(380.dp)
                 .height(56.dp)
-                .background(color = Color(0xFF3C8161), shape = RoundedCornerShape(size = 10.dp))
+                .background(color = Color(0xFF236A4C), shape = RoundedCornerShape(size = 10.dp))
         ) {
             OutlinedTextField(
                 value = username,
@@ -100,9 +136,7 @@ fun LoginScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Label dan Kolom Password
+// Kolom Password
         Text(
             text = "Password",
             style = MaterialTheme.typography.bodyMedium.copy(
@@ -120,7 +154,7 @@ fun LoginScreen(
             modifier = Modifier
                 .width(380.dp)
                 .height(56.dp)
-                .background(color = Color(0xFF3C8161), shape = RoundedCornerShape(size = 10.dp))
+                .background(color = Color(0xFF236A4C), shape = RoundedCornerShape(size = 10.dp))
         ) {
             OutlinedTextField(
                 value = password,
@@ -145,120 +179,71 @@ fun LoginScreen(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
 
-        // Tampil OTP
-        if (showOtpDialog) {
-            OtpDialog(
-                onDismiss = { showOtpDialog = false },
-                onSubmitOtp = { otpCode ->
-                    showOtpDialog = false
-                }
-            )
-        }
-
-        // Link Lupa Password
+        // Lupa Password
         Text(
             text = "Lupa Password?",
             fontSize = 12.sp,
-            fontFamily = FontFamily(Font(R.font.roboto_regular)),
-            color = Color(35 / 255f, 106 / 255f, 76 / 255f, 1f),
+            color = Color(0xFF236A4C),
             modifier = Modifier
-                .clickable { showOtpDialog = true }
+                .clickable { onNavigateToForgotPassword() }
                 .align(Alignment.Start)
-                .padding(end = 8.dp)
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // Tombol Masuk
+        // Tombol Login
         Button(
             onClick = {
                 if (username.isNotEmpty() && password.isNotEmpty()) {
                     onLogin(username, password)
+                } else {
+                    Toast.makeText(context, "Harap isi username dan password!", Toast.LENGTH_SHORT).show()
                 }
             },
-            modifier = Modifier
-                .width(240.dp)
-                .height(40.dp),
-            colors = ButtonDefaults.buttonColors(Color(0xFF3C8161))
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF236A4C))
         ) {
             Text(
                 text = "Masuk",
                 color = Color.White,
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold)
             )
         }
 
-        Spacer(modifier = Modifier.height(1.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // Link Daftar
+        // Daftar
         Row(
-            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = "Belum Punya Akun? ",
-                fontSize = 12.sp,
-                color = Color(0xFF3C8161),
-            )
+            Text(text = "Belum punya akun? ", fontSize = 14.sp)
             ClickableText(
                 text = AnnotatedString("Daftar"),
                 onClick = { onNavigateToRegister() },
-                style = MaterialTheme.typography.bodySmall.copy(color = Color(0xFF3C8161)),
+                style = TextStyle(color = Color(0xFF236A4C), fontSize = 14.sp)
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Atau
-        Text(
-            text = "Atau",
-            style = TextStyle(
-                fontSize = 12.sp,
-                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                fontWeight = FontWeight.W400,
-                color = Color(35 / 255f, 106 / 255f, 76 / 255f, 1f)
-            ),
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Tombol Masuk dengan Google
+        // Login dengan Google
         Button(
-            onClick = { /* Handle Google login */ },
-            modifier = Modifier
-                .width(240.dp)
-                .height(40.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3C8161))
+            onClick = {
+                val signInIntent = googleSignInHelper.signInWithGoogle()
+                googleSignInLauncher.launch(signInIntent)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF236A4C))
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_google),
-                    contentDescription = "Google Icon",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .padding(end = 8.dp),
-                    tint = Color.White
-                )
-
-                Text(
-                    text = "Masuk dengan Google",
-                    color = Color.White,
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                )
-            }
+            Icon(
+                painter = painterResource(id = R.drawable.ic_google),
+                contentDescription = "Google Icon",
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Masuk dengan Google", color = Color.White)
         }
     }
 }
@@ -267,8 +252,8 @@ fun LoginScreen(
 @Composable
 fun PreviewLoginScreen() {
     LoginScreen(
-        onLogin = { username, password -> /* Handle login action */ },
-        onNavigateToForgotPassword = { /* Handle forgot password navigation */ },
-        onNavigateToRegister = { /* Handle register navigation */ }
+        onLogin = { _, _ -> },
+        onNavigateToForgotPassword = {},
+        onNavigateToRegister = {}
     )
 }

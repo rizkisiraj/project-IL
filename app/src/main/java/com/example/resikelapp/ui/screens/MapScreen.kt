@@ -25,6 +25,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun MapScreen() {
     val context = LocalContext.current
 
+    // Permissions state for location
     val locationPermissionState = rememberMultiplePermissionsState(
         permissions = listOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -36,9 +37,11 @@ fun MapScreen() {
         locationPermissionState.launchMultiplePermissionRequest()
     }
 
+    // If permissions are granted, show map content
     if (locationPermissionState.allPermissionsGranted) {
         MapContent()
     } else {
+        // Show progress indicator while waiting for permissions
         Box(Modifier.fillMaxSize()) {
             CircularProgressIndicator()
         }
@@ -48,20 +51,31 @@ fun MapScreen() {
 @SuppressLint("MissingPermission")
 @Composable
 fun MapContent() {
-    // Pusat peta
+    // Center position of the map (default)
     val centerLocation = LatLng(1.1108, 104.0485)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(centerLocation, 14f)
     }
 
-    // Daftar lokasi
+    // Dummy data for locations, replace with real data from Firestore
     val locations = listOf(
-        LatLng(1.1098, 104.0478) to LocationDetailData.sampleLocation,
+        LatLng(1.1098, 104.0478) to LocationDetail(
+            name = "Nongsa Waste Center",
+            imageUrl = listOf(
+                "https://www.wmnorthwest.com/smartrecycling/gif/smart2.jpg",
+                "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2b/1b/06/43/caption.jpg?w=500&h=400&s=1"
+            ),
+            location = com.google.firebase.firestore.GeoPoint(1.1098, 104.0478),
+            address = "Jl. Raya Nongsa, Batam",
+            openHours = "08:00 - 17:00"
+        )
     )
 
     var selectedLocation by remember { mutableStateOf<LocationDetail?>(null) }
 
+    // Layout for the map and the selected location detail
     Box(modifier = Modifier.fillMaxSize()) {
+        // Google Map with markers for each location
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             cameraPositionState = cameraPositionState
@@ -71,6 +85,7 @@ fun MapContent() {
                     state = MarkerState(position = position),
                     title = detail.name,
                     onClick = {
+                        // Set selected location on marker click
                         selectedLocation = detail
                         true
                     }
@@ -78,6 +93,7 @@ fun MapContent() {
             }
         }
 
+        // Show the LocationDetailCard when a location is selected
         selectedLocation?.let { locationDetail ->
             LocationDetailCard(
                 locationDetail = locationDetail,
