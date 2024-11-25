@@ -1,4 +1,4 @@
-package com.example.resikelapp.ui.screens
+package com.example.resikelapp.ui.screens.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

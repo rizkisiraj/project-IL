@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -18,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.resikelapp.R
 import com.example.resikelapp.data.model.LocationDetail
 
@@ -70,7 +70,7 @@ fun LocationDetailCard(
                     .padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(locationDetail.images.size) { index ->
+                items(locationDetail.imageUrl.size) { index ->
                     Card(
                         modifier = Modifier
                             .width(154.dp)
@@ -79,7 +79,7 @@ fun LocationDetailCard(
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
                         Image(
-                            painter = painterResource(id = locationDetail.images[index]),
+                            painter = rememberAsyncImagePainter(locationDetail.imageUrl[index]),
                             contentDescription = "Image $index",
                             contentScale = androidx.compose.ui.layout.ContentScale.Crop,
                             modifier = Modifier.fillMaxSize()

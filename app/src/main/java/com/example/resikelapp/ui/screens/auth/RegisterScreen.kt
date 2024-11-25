@@ -1,5 +1,7 @@
-package com.example.resikelapp.ui.screens
+package com.example.resikelapp.ui.screens.auth
 
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,6 +10,7 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,12 +27,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.resikelapp.R
+import com.example.resikelapp.utils.GoogleSignInHelper
+import com.google.firebase.auth.FirebaseAuth
+import androidx.compose.ui.platform.LocalContext
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
-    onRegister: (String, String, String, String) -> Unit,
-    onNavigateToLogin: () -> Unit,
+    onRegister: (String, String, String, String) -> Unit = { _, _, _, _ -> },
+    onNavigateToLogin: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var firstName by remember { mutableStateOf("") }
@@ -37,6 +45,35 @@ fun RegisterScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val firebaseAuth = FirebaseAuth.getInstance()
+    val googleSignInHelper = remember { GoogleSignInHelper(context as ComponentActivity, firebaseAuth) }
+
+    googleSignInHelper.initGoogleSignInClient(webClientId = "336611640021-ap6c66q7qh30sa09cpeff3mnfab6arl7.apps.googleusercontent.com")
+
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val data = result.data
+        googleSignInHelper.handleSignInResult(
+            data = data,
+            onSuccess = { account ->
+                googleSignInHelper.authenticateWithFirebase(
+                    account = account,
+                    onSuccess = {
+                        Toast.makeText(context, "Registrasi dengan Google berhasil!", Toast.LENGTH_SHORT).show()
+                    },
+                    onError = { error ->
+                        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                    }
+                )
+            },
+            onError = { error ->
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -54,46 +91,77 @@ fun RegisterScreen(
                 fontSize = 40.sp,
                 fontFamily = FontFamily(Font(R.font.roboto_bold)),
                 fontWeight = FontWeight.Bold,
-                color = Color(35 / 255f, 106 / 255f, 76 / 255f, 1f)
+                color = Color(0xFF236A4C)
             ),
             modifier = Modifier.padding(bottom = 38.dp)
         )
 
         // Input Nama Depan
-        InputField(label = "Nama Depan", value = firstName, onValueChange = { firstName = it })
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Input Nama Belakang
-        InputField(label = "Nama Belakang", value = lastName, onValueChange = { lastName = it })
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Input Alamat Email
-        InputField(label = "Alamat Email", value = email, onValueChange = { email = it })
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Label Password
         Text(
-            text = "Password",
+            text = "Nama Depan",
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                color = Color(35 / 255f, 106 / 255f, 76 / 255f, 1f),
+                color = Color(0xFF236A4C),
                 fontWeight = FontWeight.Medium
             ),
             modifier = Modifier
                 .align(Alignment.Start)
                 .padding(start = 8.dp, bottom = 4.dp)
         )
+        InputField(label = "Nama Depan", value = firstName, onValueChange = { firstName = it })
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Input Nama Belakang
+        Text(
+            text = "Nama Belakang",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                color = Color(0xFF236A4C),
+                fontWeight = FontWeight.Medium
+            ),
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 8.dp, bottom = 4.dp)
+        )
+        InputField(label = "Nama Belakang", value = lastName, onValueChange = { lastName = it })
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Input Alamat Email
+        Text(
+            text = "Alamat Email",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                color = Color(0xFF236A4C),
+                fontWeight = FontWeight.Medium
+            ),
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 8.dp, bottom = 4.dp)
+        )
+        InputField(label = "Alamat Email", value = email, onValueChange = { email = it })
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Input Password
+        Text(
+            text = "Password",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                color = Color(0xFF236A4C),
+                fontWeight = FontWeight.Medium
+            ),
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 8.dp, bottom = 4.dp)
+        )
         Box(
             modifier = Modifier
                 .width(380.dp)
                 .height(48.dp)
-                .background(color = Color(0xFF3C8161), shape = RoundedCornerShape(size = 10.dp))
+                .background(color = Color(0xFF236A4C), shape = RoundedCornerShape(size = 10.dp))
         ) {
             OutlinedTextField(
                 value = password,
@@ -130,15 +198,12 @@ fun RegisterScreen(
             modifier = Modifier
                 .width(240.dp)
                 .height(40.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3C8161))
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF236A4C))
         ) {
             Text(
                 text = "Daftar",
                 color = Color.White,
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             )
         }
 
@@ -153,18 +218,18 @@ fun RegisterScreen(
             Text(
                 text = "Sudah Punya Akun? ",
                 fontSize = 12.sp,
-                color = Color(0xFF3C8161),
+                color = Color(0xFF236A4C),
             )
             Text(
                 text = "Masuk",
                 fontSize = 12.sp,
-                color = Color(0xFF3C8161),
+                color = Color(0xFF236A4C),
                 textDecoration = androidx.compose.ui.text.style.TextDecoration.Underline,
                 modifier = Modifier.clickable { onNavigateToLogin() }
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         // Atau
         Text(
@@ -178,15 +243,18 @@ fun RegisterScreen(
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         // Tombol Masuk dengan Google
         Button(
-            onClick = { /* Handle Google login */ },
+            onClick = {
+                val signInIntent = googleSignInHelper.signInWithGoogle()
+                googleSignInLauncher.launch(signInIntent)
+            },
             modifier = Modifier
                 .width(240.dp)
                 .height(40.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3C8161))
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF236A4C))
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -195,74 +263,50 @@ fun RegisterScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_google),
                     contentDescription = "Google Icon",
-                    modifier = Modifier
-                        .size(30.dp)
-                        .padding(end = 8.dp),
+                    modifier = Modifier.size(20.dp),
                     tint = Color.White
                 )
-
-                Text(
-                    text = "Masuk dengan Google",
-                    color = Color.White,
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Masuk dengan Google", color = Color.White)
             }
         }
     }
 }
 
-// Reusable InputField Composable
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InputField(
     label: String,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontSize = 14.sp,
-                fontFamily = FontFamily(Font(R.font.roboto_regular)),
-                color = Color(35 / 255f, 106 / 255f, 76 / 255f, 1f),
-                fontWeight = FontWeight.Medium
-            ),
-            modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
-        )
-
-        Box(
-            modifier = Modifier
-                .width(380.dp)
-                .height(48.dp)
-                .background(color = Color(0xFF3C8161), shape = RoundedCornerShape(size = 10.dp))
-        ) {
-            OutlinedTextField(
-                value = value,
-                onValueChange = onValueChange,
-                placeholder = { Text("Masukkan $label", color = Color.White, style = TextStyle(fontSize = 16.sp)) },
-                singleLine = true,
-                modifier = Modifier.fillMaxSize(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    containerColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent,
-                    cursorColor = Color.White,
-                    focusedTextColor = Color.White
-                )
+    Column(
+        modifier = Modifier
+            .width(380.dp)
+            .height(48.dp)
+            .background(color = Color(0xFF236A4C), shape = RoundedCornerShape(size = 10.dp)),
+        verticalArrangement = Arrangement.Center
+    ) {
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            placeholder = { Text(label, color = Color.White, style = TextStyle(fontSize = 16.sp)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxSize(),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                cursorColor = Color.White,
+                focusedTextColor = Color.White
             )
-        }
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewRegisterScreen() {
-    RegisterScreen(
-        onRegister = { firstName, lastName, email, password -> /* Handle register action */ },
-        onNavigateToLogin = { /* Handle navigation to login */ }
-    )
+fun RegisterScreenPreview() {
+    RegisterScreen()
 }
