@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.resikelapp.data.repository.ResikelRepository
 import com.example.resikelapp.ui.screens.community.CommunityViewModel
+import com.example.resikelapp.ui.screens.news.NewsViewModel
 
 class ViewModelFactory(private val repository: ResikelRepository) : ViewModelProvider.NewInstanceFactory() {
 
@@ -11,6 +12,9 @@ class ViewModelFactory(private val repository: ResikelRepository) : ViewModelPro
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CommunityViewModel::class.java)) {
             return CommunityViewModel(repository) as T
+        }
+        if (modelClass.isAssignableFrom(NewsViewModel::class.java)) {
+            return NewsViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

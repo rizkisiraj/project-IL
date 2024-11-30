@@ -1,7 +1,7 @@
 plugins {
+    id("com.google.gms.google-services")
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -66,6 +66,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.ui.text)
     implementation("androidx.core:core-splashscreen:1.0.0")
+    implementation("io.coil-kt:coil-compose:2.1.0")
+//    implementation(libs.coil.network.okhttp)
     implementation(libs.androidx.ui.text.google.fonts)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

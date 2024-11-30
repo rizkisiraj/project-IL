@@ -7,6 +7,8 @@ import androidx.compose.material.icons.outlined.Map
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.resikelapp.data.model.Screen.*
+import com.example.resikelapp.data.model.Screen.Map
 
 sealed class Screen(
     val route: String?,
@@ -22,7 +24,9 @@ sealed class Screen(
     }
     object Profile: Screen("profile", "Profile", Icons.Outlined.Person)
     object News: Screen("news", "News", null)
-    object DetailNews: Screen("detail_news", "Detail News", null )
+    object DetailNews: Screen("news/{newsId}", "Detail News", null){
+        fun createRoute(newsId: String) = "news/$newsId"
+    }
 }
 
 val screenList = listOf(
@@ -30,4 +34,15 @@ val screenList = listOf(
     Screen.Map,
     Screen.Community,
     Screen.Profile
+)
+
+val allScreens = listOf(
+    Home,
+    Map,
+    Cart,
+    Community,
+    DetailCommunity,
+    Profile,
+    News,
+    DetailNews
 )

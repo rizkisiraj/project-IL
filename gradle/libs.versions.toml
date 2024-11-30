@@ -1,5 +1,7 @@
 [versions]
-agp = "8.6.0"
+agp = "8.6.0-alpha07"
+coilComposeVersion = "3.0.4"
+coilNetworkOkhttp = "3.0.4"
 composeBomVersion = "2024.04.01"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
@@ -21,6 +23,8 @@ androidx-material-icons-extended = { module = "androidx.compose.material:materia
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose" }
 androidx-ui-text = { module = "androidx.compose.ui:ui-text" }
 androidx-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
+coil3-coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilComposeVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

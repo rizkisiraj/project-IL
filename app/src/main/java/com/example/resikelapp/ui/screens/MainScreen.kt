@@ -1,8 +1,10 @@
 package com.example.resikelapp.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
@@ -19,10 +21,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.resikelapp.data.model.Screen
+import com.example.resikelapp.data.model.allScreens
+import com.example.resikelapp.data.model.screenList
 import com.example.resikelapp.data.navigation.NavigationGraph
 import com.example.resikelapp.ui.components.BottomNav
 import com.example.resikelapp.ui.theme.GreenBase
+import com.example.resikelapp.ui.theme.GreenSecondary
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
@@ -31,16 +37,44 @@ fun MainScreen() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 
-            val bottomBarDestination = currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register"
+            val bottomBarDestination = currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register" || currentDestination?.route == Screen.DetailNews.route || currentDestination?.route == Screen.DetailCommunity.route
             if(!bottomBarDestination) {
                 BottomNav(navController)
+            }
+        },
+        topBar = {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+
+            val bottomBarDestination = screenList.any { it.route == currentDestination?.route } || currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register" || currentDestination?.route == "news" || currentDestination?.route == "community"
+            currentDestination?.route?.let { Log.d("a", it) }
+            if(!bottomBarDestination) {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = GreenSecondary,
+                        titleContentColor = GreenBase,
+                    ),
+                    title = {
+
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            navController.navigateUp()
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back Button"
+                            )
+                        }
+                    },
+                )
             }
         },
         floatingActionButton = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 
-            val bottomBarDestination = currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register"
+            val bottomBarDestination = currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register" || currentDestination?.route == Screen.DetailNews.route || currentDestination?.route == Screen.DetailCommunity.route
             if(!bottomBarDestination) {
                 FloatingActionButton(
                     onClick = {
