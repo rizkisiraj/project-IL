@@ -35,7 +35,7 @@ fun BottomNav(navController: NavHostController) {
                 },
                 icon = { Icon(screen.icon!!, contentDescription = screen.title!!) },
                 selected = currentRoute?.hierarchy?.any {
-                    it.route == screen.route
+                    it.route?.contains(screen.route ?: "") == true || (it.route?.contains("news") == true && screen.route == "home")
                 } == true,
                 onClick = {  navController.navigate(screen.route!!) {
                     popUpTo(navController.graph.findStartDestination().id)

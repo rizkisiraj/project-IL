@@ -8,6 +8,7 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,8 +19,7 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,19 +41,35 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.resikelapp.R
 import com.example.resikelapp.data.model.Screen
+import com.example.resikelapp.data.repository.ResikelRepository
 import com.example.resikelapp.ui.components.ResourceItem
 import com.example.resikelapp.ui.components.ScheduleItem
+import com.example.resikelapp.ui.components.shimmerEffect
 import com.example.resikelapp.ui.theme.GreenBase
 import com.example.resikelapp.ui.theme.GreenSecondary
+import com.example.resikelapp.utils.ViewModelFactory
+import com.example.resikelapp.utils.formatTimestampToDate
 
 @Composable
-fun BerandaScreen(navController: NavController) {
+fun BerandaScreen(
+    navController: NavController,
+    viewModel: BerandaScreenViewModel = viewModel(factory = ViewModelFactory(ResikelRepository()))
+) {
     val beritaScrollState = rememberScrollState()
     val komunitasScrollState = rememberScrollState()
-    var saya = mutableStateOf(false)
+    val newsList by viewModel.newsList.collectAsState()
+    val beritaList by viewModel.acaraComunities.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.getNewsFirebase()
+        viewModel.getAcaraFirebase()
+    }
 
     Column(
         modifier = Modifier
@@ -170,43 +186,57 @@ fun BerandaScreen(navController: NavController) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth().scrollable(beritaScrollState, orientation = Orientation.Horizontal)
         ) {
-            items(5) {
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = GreenSecondary,
-                    ),
-                    modifier =
-                    Modifier
-                        .width(132.dp)
-                        .dropShadow(
-                            shape = RoundedCornerShape(10.dp)
-                        )
-                    ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+            if(isLoading) {
+                items(3) {
+                    Box(
                         modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth()
+                            .width(132.dp)
+                            .height(145.dp)
+                            .clip(shape = RoundedCornerShape(10.dp))
+                            .shimmerEffect()
+                    )
+                }
+            }
+
+            if(!isLoading) {
+                items(newsList) { item ->
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = GreenSecondary,
+                        ),
+                        modifier =
+                        Modifier
+                            .width(132.dp)
+                            .dropShadow(
+                                shape = RoundedCornerShape(10.dp)
+                            )
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.sampah_placeholder_image),
-                            contentDescription = "Gambar sampah",
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                             modifier = Modifier
+                                .padding(8.dp)
                                 .fillMaxWidth()
-                                .height(119.dp)
-                        )
-                        Text(
-                            "Sampah Masyarakat Besar Kabupaten",
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.titleSmall
-                        )
-                        Text(
-                            "24 Mei 2024",
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                        ) {
+                            AsyncImage(
+                                model = item.imageUrl,
+                                contentDescription = "Gambar cover",
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(119.dp)
+                            )
+                            Text(
+                                item.judul,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                            Text(
+                                formatTimestampToDate(item.date),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
                     }
                 }
             }
@@ -230,7 +260,7 @@ fun BerandaScreen(navController: NavController) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth().scrollable(komunitasScrollState, orientation = Orientation.Horizontal)
         ) {
-            items(5) {
+            items(beritaList) { berita ->
                 Card(
                     colors = CardDefaults.cardColors(
                         containerColor = GreenSecondary,
@@ -258,6 +288,7 @@ fun BerandaScreen(navController: NavController) {
                             Image(
                                 painter = painterResource(R.drawable.people),
                                 contentDescription = "People's Icon",
+                                contentScale = ContentScale.Crop,
                                 modifier = Modifier.size(24.dp)
                             )
                             Text(
@@ -275,7 +306,7 @@ fun BerandaScreen(navController: NavController) {
                                 .padding(8.dp)
                         ) {
                             Text(
-                                "Workshop Milah Sampah",
+                                berita.nama,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 style = MaterialTheme.typography.titleMedium
