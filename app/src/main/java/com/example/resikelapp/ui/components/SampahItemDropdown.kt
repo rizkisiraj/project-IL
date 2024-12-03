@@ -59,12 +59,12 @@ fun SampahItemDropdown(
             SampahData.sampahItems.forEach { sampahItem ->
                 DropdownMenuItem(
                     onClick = {
-                        onSampahItemSelected(sampahItem.jenisSampah)
+                        onSampahItemSelected(sampahItem)
                         expanded = false
                     },
                     text = {
                         Text(
-                            text = sampahItem.jenisSampah,
+                            text = sampahItem,
                             color = Color.White,
                             fontSize = 16.sp
                         )

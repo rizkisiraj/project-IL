@@ -1,6 +1,7 @@
 package com.example.resikelapp.ui.screens
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.resikelapp.data.model.Acara
@@ -10,10 +11,14 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class BerandaScreenViewModel(private val repository: ResikelRepository): ViewModel() {
     private var _newsList = MutableStateFlow<List<News>>(emptyList())
     var newsList = _newsList.asStateFlow()
+
+    private var _total = MutableStateFlow<Int>(0)
+    var total = _total.asStateFlow()
 
     private var _isLoading = MutableStateFlow<Boolean>(true)
     var isLoading = _isLoading.asStateFlow()
@@ -25,6 +30,24 @@ class BerandaScreenViewModel(private val repository: ResikelRepository): ViewMod
     var acaraComunities = _acaraComunities.asStateFlow()
 
     val db = Firebase.firestore
+
+    fun fetchDataAndSum(userId: String) {
+        viewModelScope.launch {
+            db.collection("transaksi")
+                .whereEqualTo("idUser", "ixAkRVirHnaX88CCKT6T6grEUaG3")
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val totalSum = snapshot.documents
+                        .mapNotNull { it.getLong("totalPoints")?.toInt() }
+                        .sum()
+                    _total.value = totalSum
+                }
+                .addOnFailureListener { exception ->
+                    // Handle failure if needed
+                    println("Error fetching data: ${exception.message}")
+                }
+        }
+    }
 
     fun getNewsFirebase() {
         _isLoading.value = true

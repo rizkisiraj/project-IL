@@ -10,7 +10,11 @@ import com.example.resikelapp.ui.screens.KalkulasiScreen
 fun NavGraphBuilder.kalkulasiGraph(navController: NavController) {
     navigation(startDestination = Screen.Cart.route!!, route = "kalkulasi_graph") {
         composable(route = Screen.Cart.route) {
-            KalkulasiScreen(onBackClick = { navController.navigateUp() })
+            KalkulasiScreen(onBackClick = { navController.navigate("beranda") {
+                popUpTo("kalkulasi_graph") {
+                    inclusive = true
+                }
+            } })
         }
     }
 }

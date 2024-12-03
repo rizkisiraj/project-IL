@@ -54,6 +54,7 @@ import com.example.resikelapp.ui.theme.GreenBase
 import com.example.resikelapp.ui.theme.GreenSecondary
 import com.example.resikelapp.utils.ViewModelFactory
 import com.example.resikelapp.utils.formatTimestampToDate
+import com.example.resikelapp.utils.formatToRupiah
 
 @Composable
 fun BerandaScreen(
@@ -65,10 +66,12 @@ fun BerandaScreen(
     val newsList by viewModel.newsList.collectAsState()
     val beritaList by viewModel.acaraComunities.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val totalPoints by viewModel.total.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getNewsFirebase()
         viewModel.getAcaraFirebase()
+        viewModel.fetchDataAndSum("ixAkRVirHnaX88CCKT6T6grEUaG3")
     }
 
     Column(
@@ -113,12 +116,12 @@ fun BerandaScreen(
         ) {
             ResourceItem(
                 R.drawable.coin_image,
-                "Rp1.000"
+                "${totalPoints}"
             )
             Spacer(Modifier.width(64.dp))
             ResourceItem(
                 R.drawable.dollar_sign,
-                "Rp1.000"
+                "Rp0"
             )
         }
 

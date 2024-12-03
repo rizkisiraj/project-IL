@@ -1,6 +1,8 @@
 package com.example.resikelapp.data.model
 
 data class SampahItem (
-    val jenisSampah: String,
-    val points: Int
+    var idTransaksi: String = "",
+    var jenisSampah: String = "",
+    var points: Int = 0,
+    var kuantitas: Int = 0
 )
