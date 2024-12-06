@@ -32,6 +32,10 @@ import com.google.firebase.auth.FirebaseAuth
 import androidx.compose.ui.platform.LocalContext
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.Timestamp
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,6 +52,7 @@ fun RegisterScreen(
 
     val context = LocalContext.current
     val firebaseAuth = FirebaseAuth.getInstance()
+    val firestore = Firebase.firestore
     val googleSignInHelper = remember { GoogleSignInHelper(context as ComponentActivity, firebaseAuth) }
 
     googleSignInHelper.initGoogleSignInClient(webClientId = "336611640021-ap6c66q7qh30sa09cpeff3mnfab6arl7.apps.googleusercontent.com")
@@ -110,7 +115,7 @@ fun RegisterScreen(
                 .padding(start = 8.dp, bottom = 4.dp)
         )
         InputField(label = "Nama Depan", value = firstName, onValueChange = { firstName = it })
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(18.dp))
 
         // Input Nama Belakang
         Text(
@@ -126,7 +131,7 @@ fun RegisterScreen(
                 .padding(start = 8.dp, bottom = 4.dp)
         )
         InputField(label = "Nama Belakang", value = lastName, onValueChange = { lastName = it })
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(18.dp))
 
         // Input Alamat Email
         Text(
@@ -160,8 +165,9 @@ fun RegisterScreen(
         Box(
             modifier = Modifier
                 .width(380.dp)
-                .height(48.dp)
-                .background(color = Color(0xFF236A4C), shape = RoundedCornerShape(size = 10.dp))
+                .height(56.dp)
+                .background(color = Color(0xFF236A4C), shape = RoundedCornerShape(size = 14.dp))
+                .padding(horizontal = 12.dp)
         ) {
             OutlinedTextField(
                 value = password,
@@ -175,13 +181,15 @@ fun RegisterScreen(
                     }
                 },
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize(),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     containerColor = Color.Transparent,
                     unfocusedBorderColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent,
                     cursorColor = Color.White,
-                    focusedTextColor = Color.White
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White
                 )
             )
         }
@@ -192,7 +200,42 @@ fun RegisterScreen(
         Button(
             onClick = {
                 if (firstName.isNotEmpty() && lastName.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
-                    onRegister(firstName, lastName, email, password)
+                    firebaseAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val currentUser = firebaseAuth.currentUser
+                                val fullName = "$firstName $lastName"
+
+                                // Data untuk Firestore
+                                val userData = mapOf(
+                                    "name" to fullName,
+                                    "email" to email,
+                                    "fotoProfil" to "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
+                                    "listKomunitas" to listOf<String>(),
+                                    "role" to "User",
+                                    "tanggalRegistrasi" to Timestamp.now(),
+                                    "isActive" to true
+                                )
+
+                                // Menyimpan ke Firestore
+                                currentUser?.let { user ->
+                                    firestore.collection("users")
+                                        .document(user.uid)
+                                        .set(userData)
+                                        .addOnSuccessListener {
+                                            Toast.makeText(context, "Registrasi berhasil!", Toast.LENGTH_SHORT).show()
+                                            onNavigateToLogin()
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(context, "Gagal menyimpan data: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            } else {
+                                Toast.makeText(context, "Registrasi gagal: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                } else {
+                    Toast.makeText(context, "Semua field harus diisi!", Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier
@@ -249,7 +292,11 @@ fun RegisterScreen(
         Button(
             onClick = {
                 val signInIntent = googleSignInHelper.signInWithGoogle()
-                googleSignInLauncher.launch(signInIntent)
+                signInIntent?.let {
+                    googleSignInLauncher.launch(it)
+                } ?: run {
+                    Toast.makeText(context, "Gagal mendapatkan intent untuk Google SignIn", Toast.LENGTH_SHORT).show()
+                }
             },
             modifier = Modifier
                 .width(240.dp)
@@ -283,9 +330,9 @@ fun InputField(
 ) {
     Column(
         modifier = Modifier
-            .width(380.dp)
-            .height(48.dp)
-            .background(color = Color(0xFF236A4C), shape = RoundedCornerShape(size = 10.dp)),
+            .fillMaxWidth()
+
+            .background(color = Color(0xFF236A4C), shape = RoundedCornerShape(size = 14.dp)),
         verticalArrangement = Arrangement.Center
     ) {
         TextField(
@@ -293,12 +340,14 @@ fun InputField(
             onValueChange = onValueChange,
             placeholder = { Text(label, color = Color.White, style = TextStyle(fontSize = 16.sp)) },
             singleLine = true,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth()
+                .height(56.dp),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 cursorColor = Color.White,
+                unfocusedTextColor = Color.White,
                 focusedTextColor = Color.White
             )
         )

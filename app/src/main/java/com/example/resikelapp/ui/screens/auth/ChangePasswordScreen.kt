@@ -1,18 +1,15 @@
 package com.example.resikelapp.ui.screens.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -21,15 +18,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.resikelapp.R
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChangePasswordScreen(
-    onChangePassword: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val auth = FirebaseAuth.getInstance()
+
     var newPassword by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -38,7 +40,7 @@ fun ChangePasswordScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        // Judul
+        // Title
         Text(
             text = "Ganti Password",
             style = TextStyle(
@@ -50,7 +52,7 @@ fun ChangePasswordScreen(
             modifier = Modifier.padding(bottom = 40.dp)
         )
 
-        // Kolom Password Baru
+        // New Password Field
         Text(
             text = "Password Baru",
             style = TextStyle(
@@ -88,7 +90,7 @@ fun ChangePasswordScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Kolom Konfirmasi Password Baru
+        // Confirm Password Field
         Text(
             text = "Konfirmasi Password Baru",
             style = TextStyle(
@@ -124,13 +126,45 @@ fun ChangePasswordScreen(
             )
         }
 
+        // Error Message Display
+        errorMessage?.let {
+            Text(
+                text = it,
+                color = Color.Red,
+                style = TextStyle(fontSize = 12.sp)
+            )
+        }
+
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Tombol Ganti Password
+        // Change Password Button
         Button(
             onClick = {
                 if (newPassword.isNotEmpty() && confirmPassword.isNotEmpty()) {
-                    onChangePassword(newPassword, confirmPassword)
+                    if (newPassword == confirmPassword) {
+                        if (newPassword.length >= 6) {
+                            isLoading = true
+                            val user = auth.currentUser
+                            user?.updatePassword(newPassword)?.addOnCompleteListener { task ->
+                                isLoading = false
+                                if (task.isSuccessful) {
+                                    Toast.makeText(context, "Password berhasil diubah!", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Gagal mengubah password: ${task.exception?.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        } else {
+                            errorMessage = "Password harus terdiri dari minimal 6 karakter"
+                        }
+                    } else {
+                        errorMessage = "Password tidak cocok"
+                    }
+                } else {
+                    errorMessage = "Mohon isi semua field"
                 }
             },
             modifier = Modifier
@@ -138,7 +172,11 @@ fun ChangePasswordScreen(
                 .height(40.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3C8161))
         ) {
-            Text(text = "Ganti Password", color = Color.White)
+            if (isLoading) {
+                CircularProgressIndicator(color = Color.White, strokeWidth = 2.dp)
+            } else {
+                Text(text = "Ganti Password", color = Color.White)
+            }
         }
     }
 }
@@ -146,5 +184,5 @@ fun ChangePasswordScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewChangePasswordScreen() {
-    ChangePasswordScreen(onChangePassword = { _, _ -> })
+    ChangePasswordScreen()
 }

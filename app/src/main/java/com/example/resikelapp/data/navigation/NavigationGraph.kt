@@ -9,6 +9,7 @@ import com.example.resikelapp.ui.screens.KalkulasiScreen
 import com.example.resikelapp.ui.screens.auth.LoginScreen
 import com.example.resikelapp.ui.screens.MapScreen
 import com.example.resikelapp.ui.screens.auth.RegisterScreen
+import com.example.resikelapp.ui.screens.auth.ChangePasswordScreen
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
@@ -32,12 +33,24 @@ fun NavigationGraph(navController: NavHostController) {
             route = "login"
         ) {
             LoginScreen(
-                onLogin = { _, _ -> navController.navigate("beranda")},
-                onNavigateToForgotPassword = {},
+                onLogin = {
+                    navController.navigate("beranda") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+                onNavigateToForgotPassword = {
+                    navController.navigate("change_password_screen")
+                },
                 onNavigateToRegister = {
                     navController.navigate("register")
-                }
+                },
             )
+        }
+
+        composable(
+            route = "change_password_screen"
+        ) {
+            ChangePasswordScreen()
         }
         composable(
             route = "register"
@@ -49,5 +62,6 @@ fun NavigationGraph(navController: NavHostController) {
                 }
             )
         }
+
     }
 }
