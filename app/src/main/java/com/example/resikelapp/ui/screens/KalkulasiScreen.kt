@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -64,9 +66,9 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
         ) {
             IconButton(onClick = onBackClick) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
+                    Icons.Filled.Cancel,
                     contentDescription = "Back",
-                    tint = Color(0xFF1E5631)
+                    tint = Color.Red
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
@@ -82,9 +84,16 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
 
         // LazyColumn for SampahItemCards
         LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            modifier = Modifier.weight(1f).fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            if(sampahCards.isEmpty()) {
+                item {
+                    Text("Tidak ada data")
+                }
+
+            }
             itemsIndexed(sampahCards) { index, sampahItem ->
                 SampahItemCard(
                     selectedWasteType = sampahItem.jenisSampah,

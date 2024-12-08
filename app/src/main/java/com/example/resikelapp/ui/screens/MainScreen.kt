@@ -46,7 +46,7 @@ fun MainScreen() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 
-            val bottomBarDestination = screenList.any { it.route == currentDestination?.route } || currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register" || currentDestination?.route == "news" || currentDestination?.route == "community"
+            val bottomBarDestination = screenList.any { it.route == currentDestination?.route } || currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register" || currentDestination?.route == "community"
             currentDestination?.route?.let { Log.d("a", it) }
             if(!bottomBarDestination) {
                 TopAppBar(
@@ -55,7 +55,9 @@ fun MainScreen() {
                         titleContentColor = GreenBase,
                     ),
                     title = {
-
+                        if(currentDestination?.route == "news") {
+                            Text("Berita Terkini")
+                        }
                     },
                     navigationIcon = {
                         IconButton(onClick = {
