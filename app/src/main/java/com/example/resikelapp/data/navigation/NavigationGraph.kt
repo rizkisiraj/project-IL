@@ -20,9 +20,6 @@ fun NavigationGraph(navController: NavHostController) {
             MapScreen()
         }
 
-        composable(route = Screen.Profile.route!!) {
-            TODO()
-        }
 //        composable(
 //            route = Screen.Cart.route!!
 //        ) {
