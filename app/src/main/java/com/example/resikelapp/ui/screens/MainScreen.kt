@@ -37,7 +37,7 @@ fun MainScreen() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 
-            val bottomBarDestination = currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register" || currentDestination?.route == Screen.DetailNews.route || currentDestination?.route == Screen.DetailCommunity.route
+            val bottomBarDestination = currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register" || currentDestination?.route == Screen.DetailNews.route || currentDestination?.route == Screen.DetailCommunity.route || currentDestination?.route == "success"
             if(!bottomBarDestination) {
                 BottomNav(navController)
             }
@@ -46,8 +46,8 @@ fun MainScreen() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 
-            val bottomBarDestination = screenList.any { it.route == currentDestination?.route } || currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register" || currentDestination?.route == "community"
-            currentDestination?.route?.let { Log.d("a", it) }
+            val bottomBarDestination = screenList.any { it.route == currentDestination?.route } || currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register" || currentDestination?.route == "community" || currentDestination?.route == "success"
+
             if(!bottomBarDestination) {
                 TopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(
@@ -76,7 +76,7 @@ fun MainScreen() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 
-            val bottomBarDestination = currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register" || currentDestination?.route == Screen.DetailNews.route || currentDestination?.route == Screen.DetailCommunity.route
+            val bottomBarDestination = currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register" || currentDestination?.route == Screen.DetailNews.route || currentDestination?.route == Screen.DetailCommunity.route || currentDestination?.route == "success"
             if(!bottomBarDestination) {
                 FloatingActionButton(
                     onClick = {

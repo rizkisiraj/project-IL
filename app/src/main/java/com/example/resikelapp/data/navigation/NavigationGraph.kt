@@ -22,11 +22,11 @@ fun NavigationGraph(navController: NavHostController) {
         composable(route = Screen.Profile.route!!) {
             TODO()
         }
-        composable(
-            route = Screen.Cart.route!!
-        ) {
-            KalkulasiScreen()
-        }
+//        composable(
+//            route = Screen.Cart.route!!
+//        ) {
+//            KalkulasiScreen(navController = navController)
+//        }
         communityGraph(navController)
         composable(
             route = "login"

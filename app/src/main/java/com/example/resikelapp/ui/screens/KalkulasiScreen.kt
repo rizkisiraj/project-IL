@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavController
 import com.example.resikelapp.R
 import com.example.resikelapp.data.model.SampahItem
 import com.example.resikelapp.data.model.SampahTransaksi
@@ -35,7 +36,7 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 
 @Composable
-fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
+fun KalkulasiScreen(onBackClick: () -> Unit = {}, navController: NavController, sharedViewModel: SharedViewModel) {
     var sampahCards by remember { mutableStateOf(listOf<SampahItem>()) }
     var totalPoints by remember { mutableStateOf(0) }
     var isLoading by remember { mutableStateOf(false) }
@@ -243,9 +244,14 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
                         // Handle success
                         println("Batch write successful!")
                         isLoading = false
+                        sharedViewModel.updateSampahItems(sampahCards)
                         sampahCards = listOf()
                         totalPoints = 0
-                        onBackClick()
+                        navController.navigate("success") {
+                            popUpTo("kalkulasi_graph") {
+                                inclusive = true
+                            }
+                        }
                     }
                     .addOnFailureListener { e ->
                         // Handle failure
@@ -263,8 +269,8 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewKalkulasiScreen() {
-    KalkulasiScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewKalkulasiScreen() {
+//    KalkulasiScreen()
+//}
