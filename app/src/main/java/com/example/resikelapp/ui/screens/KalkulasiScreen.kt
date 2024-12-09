@@ -1,6 +1,8 @@
 package com.example.resikelapp.ui.screens
 
 import android.widget.Toast
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +17,7 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -23,40 +26,74 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavController
 import com.example.resikelapp.R
 import com.example.resikelapp.data.model.SampahItem
 import com.example.resikelapp.data.model.SampahTransaksi
 import com.example.resikelapp.ui.components.SampahItemCard
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.delay
 
 @Composable
-fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
+fun KalkulasiScreen(onBackClick: () -> Unit = {}, navController: NavController, sharedViewModel: SharedViewModel) {
     var sampahCards by remember { mutableStateOf(listOf<SampahItem>()) }
     var totalPoints by remember { mutableStateOf(0) }
     var isLoading by remember { mutableStateOf(false) }
     val db = Firebase.firestore
     val context = LocalContext.current
 
+    var scale by remember { mutableStateOf(0.8f) }
+
+    // Animation to smoothly zoom in and out
+    val animatedScale by animateFloatAsState(
+        targetValue = scale,
+        animationSpec = repeatable(
+            iterations = Int.MAX_VALUE, // Infinite loop
+            animation = tween(durationMillis = 700, easing = LinearEasing)
+        ), label = ""
+    )
+
+    // Control the zooming loop (zoom in then zoom out)
+    LaunchedEffect(Unit) {
+        while (true) {
+            scale = 1f  // Zoom in
+            delay(700)  // Wait for the zoom-in duration
+            scale = 0.8f    // Zoom out
+//            delay(700)  // Wait for the zoom-out duration
+        }
+    }
+
     if (isLoading) {
         Dialog(
             onDismissRequest = { isLoading = false },
             DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
         ) {
-            Box(
-                contentAlignment= Center,
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .size(100.dp)
-                    .background(White, shape = RoundedCornerShape(8.dp))
+                    .fillMaxWidth()
+                    .background(Color.Transparent, shape = RoundedCornerShape(8.dp))
             ) {
-                CircularProgressIndicator()
+                Image(
+                    painter = painterResource(id = R.drawable.resikel_logo),
+                    contentDescription = "Zooming Image",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .graphicsLayer(
+                            scaleX = animatedScale,
+                            scaleY = animatedScale
+                        )
+                )
+                Text("Mohon tunggu sebentar...", color = White)
             }
         }
     }
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(White)
             .padding(16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -207,9 +244,15 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
                         // Handle success
                         println("Batch write successful!")
                         isLoading = false
+                        sharedViewModel.updateSampahTransaksi(sampahTransaksi)
+                        sharedViewModel.updateSampahItems(sampahCards)
                         sampahCards = listOf()
                         totalPoints = 0
-                        onBackClick()
+                        navController.navigate("success") {
+                            popUpTo("kalkulasi_graph") {
+                                inclusive = true
+                            }
+                        }
                     }
                     .addOnFailureListener { e ->
                         // Handle failure
@@ -222,13 +265,13 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}) {
             shape = RoundedCornerShape(20.dp),
             colors = ButtonDefaults.buttonColors(Color(0xFF1E5631))
         ) {
-            Text(text = "Konfirmasi", color = Color.White, fontSize = 16.sp)
+            Text(text = "Konfirmasi", color = White, fontSize = 16.sp)
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewKalkulasiScreen() {
-    KalkulasiScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewKalkulasiScreen() {
+//    KalkulasiScreen()
+//}
