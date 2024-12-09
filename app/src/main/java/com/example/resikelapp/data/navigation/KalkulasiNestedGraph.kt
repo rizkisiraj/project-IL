@@ -30,7 +30,6 @@ fun NavGraphBuilder.kalkulasiGraph(navController: NavController) {
             exitTransition = {
                 val currentBackStackEntry = navController.currentBackStackEntry
                 val destinationRoute = currentBackStackEntry?.destination?.route
-                Log.d("destinationRoute", destinationRoute.toString())
                 return@composable when (destinationRoute) {
                     "home" -> slideOutOfContainer(
                         AnimatedContentTransitionScope.SlideDirection.Down, tween(700)
