@@ -1,5 +1,6 @@
 package com.example.resikelapp.ui.screens.profile
 
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,13 +11,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -24,6 +30,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -45,6 +52,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.resikelapp.data.model.Screen
@@ -85,15 +94,22 @@ fun ProfileScreen(
                 Text(text = "agnesia@gmail.com")
             }
 
-            Icon(
-                painter = painterResource(id = R.drawable.edit), // Replace with your edit icon resource
-                contentDescription = "Edit Profile",
-                modifier = Modifier.size(35.dp),
-                tint = Color.Unspecified
-            )
+            IconButton(
+                onClick = {
+                    navController.navigate(Screen.UbahAkun.route!!)
+                }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.edit), // Replace with your edit icon resource
+                    contentDescription = "Edit Profile",
+                    modifier = Modifier.size(35.dp),
+                    tint = Color.Unspecified,
+                )
+            }
+
+
         }
         Spacer(modifier = Modifier.height(25.dp))
-
 
         Spacer(
             modifier = Modifier
@@ -262,6 +278,7 @@ fun ProfileScreen(
                 .background(Color.LightGray)
         )
 
+
         Button(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -305,7 +322,7 @@ fun ProfileScreen(
                 contentColor = Color.White
             ),
             onClick = {
-                navController.navigate(Screen.News.route!!)
+                navController.navigate(Screen.Disimpan.route!!)
             }
         ) {
             Row(
@@ -413,6 +430,8 @@ fun ProfileScreen(
                         text = "Indonesia"
                     )
                     Icon(
+                        modifier = Modifier
+                            .size(8.dp),
                         painter = painterResource(id = R.drawable.bahasa_icon),
                         contentDescription = "Right Icon",
                     )
@@ -436,7 +455,9 @@ fun ProfileScreen(
                 containerColor = colorResource(id = R.color.primary),
                 contentColor = Color.White
             ),
-            onClick = { }
+            onClick = {
+                navController.navigate(Screen.Privacy.route!!)
+            }
         ) {
             Row(
                 modifier = Modifier
@@ -472,7 +493,9 @@ fun ProfileScreen(
                 containerColor = colorResource(id = R.color.primary),
                 contentColor = Color.White
             ),
-            onClick = { }
+            onClick = {
+                navController.navigate(Screen.UbahSandi.route!!)
+            }
         ) {
             Row(
                 modifier = Modifier
@@ -500,71 +523,12 @@ fun ProfileScreen(
             }
         }
 
-        Button(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(id = R.color.primary),
-                contentColor = Color.White
-            ),
-            onClick = { }
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.profile_delete),
-                        contentDescription = "Left Icon",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Hapus Akun")
-                }
-            }
-        }
-
-        Button(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(id = R.color.primary),
-                contentColor = Color.White
-            ),
-            onClick = { }
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.logout),
-                        contentDescription = "Left Icon",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Keluar")
-                }
-            }
-        }
+        CustomDialog("Hapus Akun", R.drawable.profile_delete)
+        CustomDialogLogout("Logout", R.drawable.logout)
 
         Text(
             modifier = Modifier
-                .padding(vertical = 16.dp)
+                .padding(top=8.dp, bottom = 100.dp)
                 .fillMaxWidth(),
             text = "v.2.2.10",
             textAlign = TextAlign.Center,
@@ -572,6 +536,181 @@ fun ProfileScreen(
         )
 
 
+    }
+}
+
+@Composable
+fun CustomDialog(text: String, drawable: Int) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    Button(
+        modifier = Modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colorResource(id = R.color.primary),
+            contentColor = Color.White
+        ),
+        onClick = { showDialog = true }
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = drawable),
+                    contentDescription = "Left Icon",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text)
+            }
+        }
+    }
+
+    // Dialog when `showDialog` is true
+    if (showDialog) {
+        CustomDeleteAccountDialog(
+            text = "$text?",
+            drawable = R.drawable.icon_dialog_delete,
+            onDismiss = { showDialog = false },
+            onConfirm = {
+                // Handle the account deletion logic here
+                showDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+fun CustomDialogLogout(text: String, drawable: Int) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    Button(
+        modifier = Modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = colorResource(id = R.color.primary),
+            contentColor = Color.White
+        ),
+        onClick = { showDialog = true }
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = drawable),
+                    contentDescription = "Left Icon",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text)
+            }
+        }
+    }
+
+    // Dialog when `showDialog` is true
+    if (showDialog) {
+        CustomDeleteAccountDialog(
+            text = "Yakin Keluar?",
+            drawable =R.drawable.icon_dialog_keluar,
+            onDismiss = { showDialog = false },
+            onConfirm = {
+                // Handle the account deletion logic here
+                showDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+fun CustomDeleteAccountDialog(
+    text: String,
+    drawable: Int,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(top = 40.dp)
+                .background(color = colorResource(R.color.primary), shape = MaterialTheme.shapes.medium)
+        ) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Icon with half-circle effect
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .offset(y = (-40).dp) // make half circle go outside the dialog
+                ) {
+                    Image(
+                        painter = painterResource(id = drawable),
+                        contentDescription = "Delete Icon",
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+
+                Text(
+                    text = text,
+                    color = colorResource(R.color.white),
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 24.sp,
+                    modifier = Modifier.padding(bottom = 24.dp)
+                )
+
+                // Buttons "Ya" and "Tidak"
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 30.dp, start = 20.dp, end = 20.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    // Button "Ya"
+                    Button(
+                        modifier = Modifier
+                            .width(100.dp),
+                        onClick = onConfirm,
+                        colors = ButtonDefaults.buttonColors(Color.White)
+                    ) {
+                        Text("Ya", color = colorResource(R.color.primary))
+                    }
+
+                    // Spacer
+                    Spacer(modifier = Modifier.width(30.dp))
+
+                    // Button "Tidak"
+                    Button(
+                        modifier = Modifier
+                            .width(100.dp),
+                        onClick = onDismiss,
+                        colors = ButtonDefaults.buttonColors(Color.White)
+                    ) {
+                        Text("Tidak", color = colorResource(R.color.primary))
+                    }
+                }
+            }
+        }
     }
 }
 
