@@ -2,7 +2,6 @@ package com.example.resikelapp.ui.screens
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,12 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.resikelapp.ui.theme.GreenBase
 import com.example.resikelapp.ui.theme.GreenLogo
-import kotlinx.coroutines.CoroutineScope
+import com.example.resikelapp.utils.formatFirebaseTimestamp
 
 
 @Composable
@@ -39,7 +37,6 @@ fun SuccessScreen(
     val offsetY = remember { Animatable(0f) } // Initialize with 0f (Float)
     val isExpanded = remember { mutableStateOf(false) }
 
-    val coroutineScope = rememberCoroutineScope()
     val rotationAngle by animateFloatAsState(
         targetValue = if (isExpanded.value) 180f else 0f,
         animationSpec = tween(durationMillis = 500), label = ""
@@ -47,8 +44,7 @@ fun SuccessScreen(
 
     LaunchedEffect(Unit) {
         while (true) {
-            // Animate the vertical offset to simulate bouncing
-            animateVerticalBounce(offsetY, coroutineScope)
+            animateVerticalBounce(offsetY)
         }
     }
 
@@ -59,11 +55,11 @@ fun SuccessScreen(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-              .fillMaxWidth()
-              .height(300.dp)
-              .clip(RoundedCornerShape(bottomEndPercent = 30, bottomStartPercent = 30))
-              .background(GreenLogo)
-              .offset(y = offsetY.value.dp)
+                .fillMaxWidth()
+                .height(300.dp)
+                .clip(RoundedCornerShape(bottomEndPercent = 30, bottomStartPercent = 30))
+                .background(GreenLogo)
+                .offset(y = offsetY.value.dp)
 
         ) {
             Box(
@@ -95,7 +91,7 @@ fun SuccessScreen(
             .size(16.dp))
 
         Text(
-            "09 Des 2024 - 15:30:48",
+            formatFirebaseTimestamp(sharedViewModel.sampahTransaksi.value.tanggal),
             color = Color.Gray
         )
         Spacer(modifier = Modifier
@@ -115,20 +111,23 @@ fun SuccessScreen(
         ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
                 Text("Total Poin")
                 Text(
-                    "30 Poin",
+                    "${sharedViewModel.totalPoin.value} Poin",
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
-//            Text("${sharedViewModel.totalPoin.value} Poin")
             }
 
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
                 Text("Nama")
                 Text("Andhika Perkasa Budi")
@@ -161,26 +160,40 @@ fun SuccessScreen(
             }
 
             if(isExpanded.value) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-                ) {
-                    Text("Plastik")
-                    Text("2Kg")
-                }
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-                ) {
-                    Text("Plastik")
-                    Text("2Kg")
-                }
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-                ) {
-                    Text("Plastik")
-                    Text("2Kg")
+                LazyColumn {
+                    items(sharedViewModel.sampahItems.value) { sampahItem ->
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            Text(
+                                sampahItem.jenisSampah
+                                )
+                            Text("${sampahItem.points / 10} kg", textAlign = TextAlign.End)
+                        }
+                        Spacer(Modifier.height(8.dp))
+                    }
+                    item {
+                        Spacer(Modifier.height(24.dp))
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                        ) {
+                            Text(
+                                "Total",
+                                fontWeight = FontWeight.Bold,
+                                )
+                            Text(
+                                "${sharedViewModel.totalPoin.value/10} kg",
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.End
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -204,24 +217,22 @@ fun SuccessScreen(
     }
 }
 
-suspend fun animateVerticalBounce(offsetY: Animatable<Float, *>, coroutineScope: CoroutineScope) {
-    // Move the image up (offset it by a certain value)
+suspend fun animateVerticalBounce(offsetY: Animatable<Float, *>) {
     offsetY.animateTo(
-        targetValue = 20f, // The amount to move upwards (as Float)
+        targetValue = 20f,
         animationSpec = tween(durationMillis = 300)
     )
 
-    // Then animate it back down
     offsetY.animateTo(
-        targetValue = 0f, // Move back to the starting position (as Float)
+        targetValue = 0f,
         animationSpec = tween(durationMillis = 300)
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewKalkulasiScreen() {
-    SuccessScreen(
-        sharedViewModel = SharedViewModel()
-    )
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewKalkulasiScreen() {
+//    SuccessScreen(
+//        sharedViewModel = SharedViewModel()
+//    )
+//}

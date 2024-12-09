@@ -244,6 +244,7 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}, navController: NavController, 
                         // Handle success
                         println("Batch write successful!")
                         isLoading = false
+                        sharedViewModel.updateSampahTransaksi(sampahTransaksi)
                         sharedViewModel.updateSampahItems(sampahCards)
                         sampahCards = listOf()
                         totalPoints = 0
