@@ -14,6 +14,7 @@ composeBom = "2024.04.01"
 lifecycleViewmodelCompose = "2.8.7"
 uiTestJunit4 = "1.5.1"
 navigationRuntimeKtx = "2.8.3"
+runtimeLivedata = "1.7.5"
 
 [libraries]
 androidx-compose-bom-v20240100 = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
@@ -43,6 +44,7 @@ navigation-compose = { module = "androidx.navigation:navigation-compose" }
 ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
 ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
