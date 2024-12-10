@@ -60,6 +60,7 @@ import com.example.resikelapp.utils.formatTimestampToDate
 import com.example.resikelapp.utils.formatToRupiah
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 @Composable
 fun BerandaScreen(
@@ -74,11 +75,12 @@ fun BerandaScreen(
     val totalPoints by viewModel.total.collectAsState()
     val context = LocalContext.current
     val userData by viewModel.user.collectAsState()
+    val scope = rememberCoroutineScope()
 
 
     val dataStore = StoreUser(context)
     val userName = dataStore.getName.collectAsState(initial = null)
-    val userProfile = dataStore.getName.collectAsState(initial = null)
+    val userProfile = dataStore.getPhotoUrl.collectAsState(initial = null)
     val userFirebaseData = FirebaseAuth.getInstance().currentUser
 
     LaunchedEffect(Unit) {
@@ -88,12 +90,16 @@ fun BerandaScreen(
         if(userFirebaseData != null) {
             viewModel.fetchDataAndSum(userFirebaseData.uid)
 
-            if(userName.value == null) {
-                Log.d("ini log", "ini masuk")
-                viewModel.getUserData(userFirebaseData.uid)
-                Log.d("ini log", userData.name)
-                dataStore.saveName(viewModel.user.value.name)
-                dataStore.savePhoto(viewModel.user.value.fotoProfil)
+            dataStore.getName.collect { name ->
+                if(name == null) {
+                    Log.d("ini log", "ini masuk")
+                    viewModel.getUserData(userFirebaseData.uid, dataStore)
+                    Log.d("ini log", viewModel.user.value.name)
+
+                } else {
+                    Log.d("DataStore Debug", "Emitted Name: $name")
+                    Log.d("ini log", "ini tidak masuk")
+                }
             }
         }
     }
@@ -118,7 +124,7 @@ fun BerandaScreen(
                 contentScale = ContentScale.Crop
             )
             Text(
-                "Welcome, ${userData.name}",
+                "Welcome, ${userName.value ?: "Guest"}",
                 modifier = Modifier.weight(1f)
             )
             Icon(

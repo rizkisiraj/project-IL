@@ -31,6 +31,7 @@ import com.example.resikelapp.R
 import com.example.resikelapp.data.model.SampahItem
 import com.example.resikelapp.data.model.SampahTransaksi
 import com.example.resikelapp.ui.components.SampahItemCard
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
@@ -42,6 +43,7 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}, navController: NavController, 
     var isLoading by remember { mutableStateOf(false) }
     val db = Firebase.firestore
     val context = LocalContext.current
+    val uid = FirebaseAuth.getInstance().currentUser?.uid
 
 
     if (isLoading) {
@@ -193,12 +195,18 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}, navController: NavController, 
                         Toast.makeText(context, "Data tidak boleh kosong", Toast.LENGTH_SHORT).show()
                         return@Button
                     }
+
+                    if(uid == null) {
+                        isLoading = false
+                        Toast.makeText(context, "Tidak ada user", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
                 }
 
                 val newDocRef = db.collection("transaksi").document()
                 val sampahTransaksi = SampahTransaksi(
                     id = newDocRef.id,
-                    idUser = "ixAkRVirHnaX88CCKT6T6grEUaG3",
+                    idUser = uid!!,
                     status = "pending",
                     totalPoints = totalPoints
                 )

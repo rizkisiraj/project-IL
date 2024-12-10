@@ -23,7 +23,7 @@ class StoreUser(private val context: Context) {
             preferences[USER_NAME_KEY]
         }
 
-    val getEmail: Flow<String?> = context.dataStoree.data
+    val getPhotoUrl: Flow<String?> = context.dataStoree.data
         .map { preferences ->
             preferences[USER_PHOTO_KEY]
         }

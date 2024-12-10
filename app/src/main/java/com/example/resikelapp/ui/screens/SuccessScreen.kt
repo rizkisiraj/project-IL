@@ -19,12 +19,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.resikelapp.ui.theme.GreenBase
 import com.example.resikelapp.ui.theme.GreenLogo
+import com.example.resikelapp.utils.StoreUser
 import com.example.resikelapp.utils.formatFirebaseTimestamp
 
 
@@ -36,6 +38,9 @@ fun SuccessScreen(
 
     val offsetY = remember { Animatable(0f) } // Initialize with 0f (Float)
     val isExpanded = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val dataStore = StoreUser(context)
+    val name = dataStore.getName.collectAsState(initial = "")
 
     val rotationAngle by animateFloatAsState(
         targetValue = if (isExpanded.value) 180f else 0f,
@@ -130,7 +135,7 @@ fun SuccessScreen(
                     .padding(horizontal = 16.dp)
             ) {
                 Text("Nama")
-                Text("Andhika Perkasa Budi")
+                Text("${name.value}")
             }
 
             Row(

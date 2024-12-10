@@ -41,7 +41,7 @@ class BerandaScreenViewModel(private val repository: ResikelRepository): ViewMod
     fun fetchDataAndSum(userId: String) {
         viewModelScope.launch {
             db.collection("transaksi")
-                .whereEqualTo("idUser", "ixAkRVirHnaX88CCKT6T6grEUaG3")
+                .whereEqualTo("idUser", userId)
                 .get()
                 .addOnSuccessListener { snapshot ->
                     val totalSum = snapshot.documents
@@ -86,7 +86,7 @@ class BerandaScreenViewModel(private val repository: ResikelRepository): ViewMod
             }
     }
 
-    fun getUserData(id: String) {
+    fun getUserData(id: String, dataStore: StoreUser) {
         db.collection("users")
             .document(id)
             .addSnapshotListener { documentSnapshot, error ->
@@ -99,6 +99,9 @@ class BerandaScreenViewModel(private val repository: ResikelRepository): ViewMod
                     if (userSnapshot != null) {
                         Log.d("ini", userSnapshot.name)
                         _user.value = userSnapshot
+                        viewModelScope.launch {
+                            dataStore.saveName(userSnapshot.name)
+                        }
                     }
                 }
             }
