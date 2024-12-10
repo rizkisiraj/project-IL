@@ -43,26 +43,6 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}, navController: NavController, 
     val db = Firebase.firestore
     val context = LocalContext.current
 
-    var scale by remember { mutableStateOf(0.8f) }
-
-    // Animation to smoothly zoom in and out
-    val animatedScale by animateFloatAsState(
-        targetValue = scale,
-        animationSpec = repeatable(
-            iterations = Int.MAX_VALUE, // Infinite loop
-            animation = tween(durationMillis = 700, easing = LinearEasing)
-        ), label = ""
-    )
-
-    // Control the zooming loop (zoom in then zoom out)
-    LaunchedEffect(Unit) {
-        while (true) {
-            scale = 1f  // Zoom in
-            delay(700)  // Wait for the zoom-in duration
-            scale = 0.8f    // Zoom out
-//            delay(700)  // Wait for the zoom-out duration
-        }
-    }
 
     if (isLoading) {
         Dialog(
@@ -81,12 +61,14 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}, navController: NavController, 
                     contentDescription = "Zooming Image",
                     modifier = Modifier
                         .size(100.dp)
-                        .graphicsLayer(
-                            scaleX = animatedScale,
-                            scaleY = animatedScale
-                        )
                 )
                 Text("Mohon tunggu sebentar...", color = White)
+                Spacer(modifier = Modifier.size(8.dp))
+                CircularProgressIndicator(
+                    color = White,
+                    modifier = Modifier
+                        .size(40.dp)
+                )
             }
         }
     }
