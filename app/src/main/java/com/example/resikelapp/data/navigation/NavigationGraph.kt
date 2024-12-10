@@ -10,22 +10,19 @@ import com.example.resikelapp.ui.screens.auth.LoginScreen
 import com.example.resikelapp.ui.screens.MapScreen
 import com.example.resikelapp.ui.screens.auth.RegisterScreen
 import com.example.resikelapp.ui.screens.auth.ChangePasswordScreen
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.auth.User
 
 @Composable
-fun NavigationGraph(navController: NavHostController) {
+fun NavigationGraph(navController: NavHostController, user: FirebaseUser?) {
 
-    NavHost(navController = navController, startDestination = "register") {
+    NavHost(navController = navController, startDestination = if(user != null) "beranda" else "register") {
         berandaGraph(navController)
         kalkulasiGraph(navController)
         composable(route = Screen.Map.route!!) {
             MapScreen()
         }
 
-//        composable(
-//            route = Screen.Cart.route!!
-//        ) {
-//            KalkulasiScreen(navController = navController)
-//        }
         communityGraph(navController)
         profileGraph(navController)
         composable(

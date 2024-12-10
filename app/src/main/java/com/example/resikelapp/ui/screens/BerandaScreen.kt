@@ -2,6 +2,7 @@ package com.example.resikelapp.ui.screens
 
 
 import android.graphics.BlurMaskFilter
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -52,9 +54,12 @@ import com.example.resikelapp.ui.components.ScheduleItem
 import com.example.resikelapp.ui.components.shimmerEffect
 import com.example.resikelapp.ui.theme.GreenBase
 import com.example.resikelapp.ui.theme.GreenSecondary
+import com.example.resikelapp.utils.StoreUser
 import com.example.resikelapp.utils.ViewModelFactory
 import com.example.resikelapp.utils.formatTimestampToDate
 import com.example.resikelapp.utils.formatToRupiah
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun BerandaScreen(
@@ -67,11 +72,30 @@ fun BerandaScreen(
     val beritaList by viewModel.acaraComunities.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val totalPoints by viewModel.total.collectAsState()
+    val context = LocalContext.current
+    val userData by viewModel.user.collectAsState()
+
+
+    val dataStore = StoreUser(context)
+    val userName = dataStore.getName.collectAsState(initial = null)
+    val userProfile = dataStore.getName.collectAsState(initial = null)
+    val userFirebaseData = FirebaseAuth.getInstance().currentUser
 
     LaunchedEffect(Unit) {
         viewModel.getNewsFirebase()
         viewModel.getAcaraFirebase()
-        viewModel.fetchDataAndSum("ixAkRVirHnaX88CCKT6T6grEUaG3")
+
+        if(userFirebaseData != null) {
+            viewModel.fetchDataAndSum(userFirebaseData.uid)
+
+            if(userName.value == null) {
+                Log.d("ini log", "ini masuk")
+                viewModel.getUserData(userFirebaseData.uid)
+                Log.d("ini log", userData.name)
+                dataStore.saveName(viewModel.user.value.name)
+                dataStore.savePhoto(viewModel.user.value.fotoProfil)
+            }
+        }
     }
 
     Column(
@@ -85,8 +109,8 @@ fun BerandaScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(R.drawable.profile),
+            AsyncImage(
+                model = userData.fotoProfil,
                 contentDescription = "image profile",
                 modifier = Modifier
                     .size(48.dp)
@@ -94,7 +118,7 @@ fun BerandaScreen(
                 contentScale = ContentScale.Crop
             )
             Text(
-                "Welcome, Resikel",
+                "Welcome, ${userData.name}",
                 modifier = Modifier.weight(1f)
             )
             Icon(
