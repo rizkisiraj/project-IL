@@ -17,6 +17,13 @@ fun formatToRupiah(amount: Int): String {
     // Create a NumberFormat instance for Indonesian Rupiah
     val rupiahFormat = NumberFormat.getCurrencyInstance(Locale("id", "ID"))
 
-    // Format the integer as a currency string
     return rupiahFormat.format(amount)
+}
+
+fun formatFirebaseTimestamp(timestamp: Timestamp): String {
+    val date: Date = timestamp.toDate()
+
+    val formatter = SimpleDateFormat("dd MMM yyyy - HH:mm:ss", Locale("id"))
+
+    return formatter.format(date)
 }
