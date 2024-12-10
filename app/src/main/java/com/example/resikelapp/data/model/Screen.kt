@@ -24,6 +24,10 @@ sealed class Screen(
     }
     object Profile: Screen("profile", "Profile", Icons.Outlined.Person)
     object News: Screen("news", "News", null)
+    object Disimpan: Screen("disimpan", "Disimpan", null)
+    object Privacy: Screen("privacy", "Privasi dan Keamanan", null)
+    object UbahSandi: Screen("ubahsandi", "Ubah Sandi", null)
+    object UbahAkun: Screen("ubahakun", "Ubah Akun", null)
     object DetailNews: Screen("news/{newsId}", "Detail News", null){
         fun createRoute(newsId: String) = "news/$newsId"
     }

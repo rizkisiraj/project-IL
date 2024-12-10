@@ -65,6 +65,7 @@ fun NewsScreen(
             .padding(16.dp)
             .verticalScroll(screenScrollState)
     ) {
+        Spacer(modifier = Modifier.height(60.dp))
         HorizontalPager(
             state = pagerState,
             modifier = Modifier

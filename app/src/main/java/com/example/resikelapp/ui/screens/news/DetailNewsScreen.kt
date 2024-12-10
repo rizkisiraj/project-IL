@@ -46,12 +46,13 @@ fun DetailNewsScreen(
     ) {
         Spacer(modifier = Modifier.height(60.dp))
         if(isLoading) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize().padding(16.dp)
             ) {
                 CircularProgressIndicator()
+                Spacer(Modifier.height(8.dp))
                 Text("Sedang memuat artikel")
             }
         }
