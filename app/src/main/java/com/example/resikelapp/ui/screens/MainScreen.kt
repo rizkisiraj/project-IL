@@ -33,11 +33,14 @@ import com.example.resikelapp.data.navigation.NavigationGraph
 import com.example.resikelapp.ui.components.BottomNav
 import com.example.resikelapp.ui.theme.GreenBase
 import com.example.resikelapp.ui.theme.GreenSecondary
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+    val user = FirebaseAuth.getInstance().currentUser
+
     Scaffold(
         bottomBar = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -135,11 +138,10 @@ fun MainScreen() {
                     Icon(Icons.Filled.ShoppingCart, contentDescription = "Add", tint = Color.White, modifier = Modifier.size(45.dp))
                 }
             }
-
         },
         floatingActionButtonPosition = FabPosition.Center,
         content = { innerPadding ->
-            NavigationGraph(navController)
+            NavigationGraph(navController, user)
         }
     )
 }
