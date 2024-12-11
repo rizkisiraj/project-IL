@@ -92,9 +92,7 @@ fun BerandaScreen(
 
             dataStore.getName.collect { name ->
                 if(name == null) {
-                    Log.d("ini log", "ini masuk")
                     viewModel.getUserData(userFirebaseData.uid, dataStore)
-                    Log.d("ini log", viewModel.user.value.name)
 
                 } else {
                     Log.d("DataStore Debug", "Emitted Name: $name")
@@ -116,7 +114,7 @@ fun BerandaScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = userData.fotoProfil,
+                model = userProfile.value,
                 contentDescription = "image profile",
                 modifier = Modifier
                     .size(48.dp)

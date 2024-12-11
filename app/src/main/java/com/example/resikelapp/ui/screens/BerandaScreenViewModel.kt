@@ -101,6 +101,7 @@ class BerandaScreenViewModel(private val repository: ResikelRepository): ViewMod
                         _user.value = userSnapshot
                         viewModelScope.launch {
                             dataStore.saveName(userSnapshot.name)
+                            dataStore.savePhoto(userSnapshot.fotoProfil)
                         }
                     }
                 }
