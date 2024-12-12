@@ -3,6 +3,7 @@ package com.example.resikelapp.ui.screens
 
 import android.graphics.BlurMaskFilter
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
@@ -16,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Schedule
@@ -28,6 +30,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawOutline
@@ -43,10 +46,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.resikelapp.R
+import com.example.resikelapp.data.model.DaftarPenjemputan
+import com.example.resikelapp.data.model.SampahTransaksi
 import com.example.resikelapp.data.model.Screen
 import com.example.resikelapp.data.repository.ResikelRepository
 import com.example.resikelapp.ui.components.ResourceItem
@@ -60,6 +67,7 @@ import com.example.resikelapp.utils.formatTimestampToDate
 import com.example.resikelapp.utils.formatToRupiah
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
 import kotlinx.coroutines.launch
 
 @Composable
@@ -73,7 +81,11 @@ fun BerandaScreen(
     val beritaList by viewModel.acaraComunities.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val totalPoints by viewModel.total.collectAsState()
+    val jadwalPenjemputan by viewModel.jadwalPenjemputan.collectAsState()
+    val submittedValue by viewModel.submittedStatus.collectAsState()
     val context = LocalContext.current
+    val db = com.google.firebase.ktx.Firebase.firestore
+    var isPausing by remember { mutableStateOf(false) }
     val userData by viewModel.user.collectAsState()
     val scope = rememberCoroutineScope()
 
@@ -93,13 +105,124 @@ fun BerandaScreen(
             dataStore.getName.collect { name ->
                 if(name == null) {
                     viewModel.getUserData(userFirebaseData.uid, dataStore)
-
                 } else {
                     Log.d("DataStore Debug", "Emitted Name: $name")
                     Log.d("ini log", "ini tidak masuk")
                 }
             }
         }
+    }
+
+    LaunchedEffect(userFirebaseData) {
+        viewModel.getTanggalPenjemputanTerdekat()
+//        Log.d("coba","refetching")
+    }
+
+    LaunchedEffect(userFirebaseData, jadwalPenjemputan, isPausing) {
+        if (userFirebaseData != null && jadwalPenjemputan != null) {
+            viewModel.checkIfTheUserAlreadySubmittedPenjemputan(userId = userFirebaseData.uid, penjemputanId = jadwalPenjemputan!!.id)
+        }
+    }
+
+    if (isPausing) {
+        var isSubmiting by remember { mutableStateOf(false) }
+
+        if(isSubmiting) {
+            Dialog(onDismissRequest = {
+                isSubmiting = false
+                isPausing = false
+            }) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .padding(16.dp),
+                    shape = RoundedCornerShape(16.dp),
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(40.dp)
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                        Text(
+                            text = "Tunggu Sebentar",
+                            modifier = Modifier
+                                .wrapContentSize(Alignment.Center),
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+
+                }
+            }
+        } else {
+            AlertDialog(
+                icon = {
+                    Icon(Icons.Default.Info, contentDescription = "Example Icon")
+                },
+                title = {
+                    Text(text = "Konfirmasi Penjemputan")
+                },
+                text = {
+                    Text(text = "Apakah kamu yakin ingin mendaftar penjemputan?")
+                },
+                onDismissRequest = {
+                    isPausing = false
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            isSubmiting = true
+                            if(userFirebaseData != null && jadwalPenjemputan != null) {
+                                val newDocRef = db.collection("daftarPenjemputan").document()
+                                val daftarPenjemputan = DaftarPenjemputan(
+                                    alamat = "Perumnas Jalan Bintan",
+                                    idUser = userFirebaseData.uid,
+                                    status = "Sedang Diverifikasi",
+                                    idPenjemputan = jadwalPenjemputan!!.id,
+                                )
+
+                                newDocRef.set(daftarPenjemputan)
+                                    .addOnSuccessListener {
+                                        isSubmiting = false
+                                        isPausing = false
+                                        Toast.makeText(
+                                            context,
+                                            "Pendaftaran berhasil",
+                                            Toast.LENGTH_SHORT,
+                                        ).show()
+                                    }
+                                    .addOnFailureListener { e ->
+                                        isSubmiting = false
+                                        isPausing = false
+                                        Toast.makeText(
+                                            context,
+                                            "Pendaftaran gagal: $e",
+                                            Toast.LENGTH_SHORT,
+                                        ).show()
+                                    }
+                            }
+                        }
+                    ) {
+                        Text("Ya")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            isPausing = false
+                        }
+                    ) {
+                        Text("Tidak")
+                    }
+                }
+            )
+        }
+
     }
 
     Column(
@@ -162,7 +285,7 @@ fun BerandaScreen(
                     shape = RoundedCornerShape(10.dp)
                 )
                 .clip(RoundedCornerShape(10.dp))
-                .background(Color.White)
+                .background(White)
                 .padding(16.dp)
         ) {
             Image(
@@ -175,22 +298,44 @@ fun BerandaScreen(
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp, alignment = Alignment.CenterVertically)
             ) {
-                Text(
-                    "Belum Terdaftar",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = Color.Red
-                )
+                when(submittedValue.lowercase()) {
+                    "Belum Terdaftar".lowercase() -> Text(
+                        "Belum Terdaftar",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.Red
+                    )
+                    "Sudah Terdaftar".lowercase() -> Text(
+                        "Belum Terdaftar",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.Green
+                    )
+                    else -> Text(
+                        "Sedang Diverifikasi",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color(0xFFF08930)
+                    )
+                }
                 ScheduleItem(icon = Icons.Outlined.Schedule, value = "08:00 - 12:00")
-                ScheduleItem(icon = Icons.Filled.CalendarMonth, value = "12/12/2024")
+                ScheduleItem(icon = Icons.Filled.CalendarMonth, value = formatTimestampToDate(jadwalPenjemputan?.tanggal))
             }
 
             Spacer(Modifier.weight(1f))
-            Icon(
-                Icons.Filled.Add,
-                contentDescription = "Tambah",
-                tint = GreenBase,
-                modifier = Modifier.size(48.dp)
-            )
+            IconButton(
+                onClick = {
+                    if(submittedValue == "Belum Terdaftar") {
+                        isPausing = true
+                    }
+                },
+                enabled = if(submittedValue == "Belum Terdaftar") true else false
+            ) {
+                Icon(
+                    Icons.Filled.Add,
+                    contentDescription = "Tambah",
+                    tint = GreenBase,
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+
         }
 
         Spacer(Modifier.height(32.dp))
