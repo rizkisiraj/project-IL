@@ -48,6 +48,7 @@ fun RegisterScreen(
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
@@ -133,6 +134,22 @@ fun RegisterScreen(
         InputField(label = "Nama Belakang", value = lastName, onValueChange = { lastName = it })
         Spacer(modifier = Modifier.height(18.dp))
 
+        // Input Nomor Telepon
+        Text(
+            text = "Nomor Telepon",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.roboto_regular)),
+                color = Color(0xFF236A4C),
+                fontWeight = FontWeight.Medium
+            ),
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 8.dp, bottom = 4.dp)
+        )
+        InputField(label = "Nomor Telepon", value = phoneNumber, onValueChange = { phoneNumber = it })
+        Spacer(modifier = Modifier.height(18.dp))
+
         // Input Alamat Email
         Text(
             text = "Alamat Email",
@@ -210,6 +227,7 @@ fun RegisterScreen(
                                 val userData = mapOf(
                                     "name" to fullName,
                                     "email" to email,
+                                    "phoneNumber" to phoneNumber,
                                     "fotoProfil" to "https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg",
                                     "listKomunitas" to listOf<String>(),
                                     "role" to "User",
