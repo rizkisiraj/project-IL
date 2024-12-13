@@ -27,3 +27,11 @@ fun formatFirebaseTimestamp(timestamp: Timestamp): String {
 
     return formatter.format(date)
 }
+
+fun formatToDateLocal(timestamp: Timestamp): String {
+    val date: Date = timestamp.toDate()
+
+    val formatter = SimpleDateFormat("dd MMM", Locale("id"))
+
+    return formatter.format(date)
+}

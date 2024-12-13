@@ -54,7 +54,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.android.gms:play-services-auth")
+    implementation("com.google.android.gms:play-services-auth:20.6.0")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.google.accompanist:accompanist-permissions:0.32.0")
