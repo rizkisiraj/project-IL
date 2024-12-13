@@ -7,6 +7,7 @@ import com.example.resikelapp.ui.screens.BerandaScreenViewModel
 import com.example.resikelapp.ui.screens.SharedViewModel
 import com.example.resikelapp.ui.screens.community.CommunityViewModel
 import com.example.resikelapp.ui.screens.news.NewsViewModel
+import com.example.resikelapp.ui.screens.profile.ProfileViewModel
 
 class ViewModelFactory(private val repository: ResikelRepository?) : ViewModelProvider.NewInstanceFactory() {
 
@@ -23,6 +24,9 @@ class ViewModelFactory(private val repository: ResikelRepository?) : ViewModelPr
         }
         if (modelClass.isAssignableFrom(SharedViewModel::class.java)) {
             return SharedViewModel() as T
+        }
+        if (modelClass.isAssignableFrom(ProfileViewModel::class.java)) {
+            return ProfileViewModel() as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

@@ -34,7 +34,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,22 +48,42 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.resikelapp.R
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.resikelapp.data.model.Screen
+import com.example.resikelapp.utils.ViewModelFactory
+import com.example.resikelapp.utils.formatToDateLocal
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 
 
 @Composable
 fun ProfileScreen(
     navController: NavController,
+    viewModel: ProfileViewModel = viewModel(factory = ViewModelFactory(
+        repository = null
+    ))
     ) {
     var isNightModeEnabled by remember { mutableStateOf(false) }
+
+    val userFirebase = FirebaseAuth.getInstance().currentUser
+    val user by viewModel.user.collectAsState()
+    val jadwalPenjemputan by viewModel.jadwalPenjemputan.collectAsState()
+    val total by viewModel.totalObject.collectAsState()
+
+    LaunchedEffect(Unit) {
+        if(userFirebase != null) {
+            viewModel.getUserData(userFirebase.uid)
+            viewModel.getTanggalPenjemputanTerdekat()
+            viewModel.fetchDataAndSum(userFirebase.uid)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,8 +96,9 @@ fun ProfileScreen(
                 .padding(bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(R.drawable.imageagnesia),
+            AsyncImage(
+                model = user.fotoProfil,
+                placeholder = painterResource(R.drawable.profile),
                 contentDescription = "image profile",
                 modifier = Modifier
                     .size(50.dp)
@@ -90,8 +111,8 @@ fun ProfileScreen(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                Text(text = "Agnesia", fontSize = 25.sp)
-                Text(text = "agnesia@gmail.com")
+                Text(text = user.name, fontSize = 25.sp)
+                Text(text = user.email)
             }
 
             IconButton(
@@ -148,7 +169,7 @@ fun ProfileScreen(
                 ) {
                     Column {
                         Text(
-                            text = "13 September",
+                            text = jadwalPenjemputan?.let { formatToDateLocal(it.tanggal) } ?: "No Date",
                             fontSize = 28.sp,
                             style = MaterialTheme.typography.titleSmall,
                         )
@@ -205,7 +226,7 @@ fun ProfileScreen(
                         verticalAlignment = Alignment.CenterVertically // Menjaga teks dan ikon berada di tengah vertikal
                     ) {
                         Text(
-                            text = "2000",
+                            text = "${total["totalPoints"]}",
                             fontSize = 28.sp,
                             style = MaterialTheme.typography.titleSmall,
                         )
@@ -251,7 +272,7 @@ fun ProfileScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "156 Kg",
+                            text = "${total["totalKilos"]} Kg",
                             fontSize = 28.sp,
                             style = MaterialTheme.typography.titleSmall,
                         )
