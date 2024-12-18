@@ -16,7 +16,7 @@ import com.google.firebase.firestore.auth.User
 @Composable
 fun NavigationGraph(navController: NavHostController, user: FirebaseUser?) {
 
-    NavHost(navController = navController, startDestination = if(user != null) "beranda" else "register") {
+    NavHost(navController = navController, startDestination = if(user != null) "beranda" else "login") {
         berandaGraph(navController)
         kalkulasiGraph(navController)
         composable(route = Screen.Map.route!!) {

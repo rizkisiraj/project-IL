@@ -29,7 +29,7 @@ fun SampahItemCard(
     onRemoveCard: () -> Unit,
     onQuantityChanged: (Int) -> Unit
 ) {
-    var text = remember { mutableStateOf("")}
+    var text = remember { mutableStateOf("0")}
 
     var pointPerCard = remember { mutableStateOf(0) }
 

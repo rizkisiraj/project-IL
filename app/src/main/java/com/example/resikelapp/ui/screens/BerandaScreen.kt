@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -115,7 +116,6 @@ fun BerandaScreen(
 
     LaunchedEffect(userFirebaseData) {
         viewModel.getTanggalPenjemputanTerdekat()
-//        Log.d("coba","refetching")
     }
 
     LaunchedEffect(userFirebaseData, jadwalPenjemputan, isPausing) {
@@ -229,6 +229,7 @@ fun BerandaScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Row(
             modifier = Modifier

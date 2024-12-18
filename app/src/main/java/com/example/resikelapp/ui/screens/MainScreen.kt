@@ -80,7 +80,15 @@ fun MainScreen() {
                                 fontWeight = FontWeight.Bold,
                                 color = colorResource(R.color.primary)
                             )
-                        } else if(currentDestination?.route == "ubahsandi") {
+                        } else if(currentDestination?.route == "aktivitas") {
+                            Text(
+                                text = "Aktivitas", // Ganti teks sesuai kebutuhan
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colorResource(R.color.primary)
+                            )
+                        }
+                        else if(currentDestination?.route == "ubahsandi") {
                             Text(
                                 text = "Ubah Sandi", // Ganti teks sesuai kebutuhan
                                 fontSize = 20.sp,
@@ -114,7 +122,7 @@ fun MainScreen() {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry?.destination
 
-            val bottomBarDestination = currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register" || currentDestination?.route == Screen.DetailNews.route || currentDestination?.route == Screen.DetailCommunity.route || currentDestination?.route == "success"
+            val bottomBarDestination = currentDestination?.route == Screen.Cart.route || currentDestination?.route == "login" || currentDestination?.route == "register" || currentDestination?.route == Screen.DetailNews.route || currentDestination?.route == Screen.DetailCommunity.route || currentDestination?.route == "success" || currentDestination?.route == "aktivitas"
             if(!bottomBarDestination) {
                 FloatingActionButton(
                     onClick = {

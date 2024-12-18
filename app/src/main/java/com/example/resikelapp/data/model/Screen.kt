@@ -31,6 +31,7 @@ sealed class Screen(
     object DetailNews: Screen("news/{newsId}", "Detail News", null){
         fun createRoute(newsId: String) = "news/$newsId"
     }
+    object Aktivitas: Screen("aktivitas", "Detail News", null)
 }
 
 val screenList = listOf(
@@ -48,5 +49,6 @@ val allScreens = listOf(
     DetailCommunity,
     Profile,
     News,
-    DetailNews
+    DetailNews,
+    Aktivitas
 )

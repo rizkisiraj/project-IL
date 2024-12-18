@@ -38,7 +38,9 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun KalkulasiScreen(onBackClick: () -> Unit = {}, navController: NavController, sharedViewModel: SharedViewModel) {
-    var sampahCards by remember { mutableStateOf(listOf<SampahItem>()) }
+    var sampahCards by remember { mutableStateOf(listOf<SampahItem>(SampahItem(
+        jenisSampah = "Organik"
+    ))) }
     var totalPoints by remember { mutableStateOf(0) }
     var isLoading by remember { mutableStateOf(false) }
     val db = Firebase.firestore
@@ -147,7 +149,9 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}, navController: NavController, 
         // Icon Add in Center Bottom
         IconButton(
             onClick = {
-                sampahCards = sampahCards + SampahItem()
+                sampahCards = sampahCards + SampahItem(
+                    jenisSampah = "Organik"
+                )
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -252,10 +256,10 @@ fun KalkulasiScreen(onBackClick: () -> Unit = {}, navController: NavController, 
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            shape = RoundedCornerShape(20.dp),
+            shape = RoundedCornerShape(24.dp),
             colors = ButtonDefaults.buttonColors(Color(0xFF1E5631))
         ) {
-            Text(text = "Konfirmasi", color = White, fontSize = 16.sp)
+            Text(text = "Konfirmasi", color = White, fontSize = 16.sp, modifier = Modifier.padding(vertical = 8.dp))
         }
     }
 }
